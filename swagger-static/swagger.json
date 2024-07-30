@@ -1,0 +1,906 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/product/specification-json-format": {
+      "post": {
+        "operationId": "ProductController_createProductSpecificationJson",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductSpecificationJsonDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/specification-tsv-format": {
+      "post": {
+        "operationId": "ProductController_createProductSpecificationTsv",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductSpecificationTsvDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/{id}": {
+      "delete": {
+        "operationId": "ProductController_deleteProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/change-delete-status/{id}": {
+      "put": {
+        "operationId": "ProductController_changeDeleteStatusProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/specification-json-format/{id}": {
+      "put": {
+        "operationId": "ProductController_updateProductSpecificationJson",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductSpecificationTsvDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProductController_getProductByIdSpecificationJson",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/specification-tsv-format/{id}": {
+      "put": {
+        "operationId": "ProductController_updateProductSpecificationTsv",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductSpecificationTsvDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "ProductController_getProductByIdSpecificationTsv",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/product/product-in-table-key": {
+      "get": {
+        "operationId": "ProductController_getProductInTableKeys",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/product/filter": {
+      "post": {
+        "operationId": "ProductController_filterProductList",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetProductListFilterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ]
+      }
+    },
+    "/product/{id}/upload-images": {
+      "post": {
+        "operationId": "ProductController_uploadProductImages",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Images to upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "images": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "UsersController_findAll",
+        "summary": "Retrieve a list of users",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "UsersController_create",
+        "summary": "Create a new user",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User Created"
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "UsersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "operationId": "UsersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserEntity"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "users"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "operationId": "AuthController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthEntity"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "NestJS API",
+    "description": "A progressive Node.js framework for building efficient and scalable server-side applications.",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "CreateItemInTableDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Nome Comercial"
+          },
+          "value": {
+            "type": "string",
+            "example": "Cloreto de Sódio"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "CreateTopicDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Pureza"
+          },
+          "value": {
+            "type": "string",
+            "example": "A pureza do produto pode variar entre 90% e 95%"
+          }
+        },
+        "required": [
+          "name",
+          "value"
+        ]
+      },
+      "CreateSpecificationDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "example": "Composição Química"
+          },
+          "headers": {
+            "example": [
+              "Pureza",
+              "Densidade",
+              "Solubilidade",
+              "Composição Química"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows": {
+            "example": [
+              [
+                "row1",
+                "row1",
+                "row1",
+                "row1",
+                "row1",
+                "row1"
+              ],
+              [
+                "row2",
+                "row2",
+                "row2",
+                "row2",
+                "row2",
+                "row2"
+              ],
+              [
+                "row3",
+                "row3",
+                "row3",
+                "row3",
+                "row3",
+                "row3"
+              ],
+              [
+                "row4",
+                "row4",
+                "row4",
+                "row4",
+                "row4",
+                "row4"
+              ]
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "headers",
+          "rows"
+        ]
+      },
+      "CreateProductSpecificationJsonDto": {
+        "type": "object",
+        "properties": {
+          "product_title": {
+            "type": "string",
+            "example": "Cloreto de Sódio - Swagger specification Json"
+          },
+          "item_in_table": {
+            "example": [
+              {
+                "name": "Nome Comercial",
+                "value": "Cloreto de Sódio"
+              },
+              {
+                "name": "Nome Químico",
+                "value": "Nome químico"
+              },
+              {
+                "name": "Função",
+                "value": "Função"
+              },
+              {
+                "name": "Aplicação",
+                "value": "Aplicação"
+              },
+              {
+                "name": "Segmentos",
+                "value": [
+                  "agricultura",
+                  "tintas_e_resinas",
+                  "tratamento_de_agua",
+                  "cuidados_em_casa"
+                ]
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateItemInTableDto"
+            }
+          },
+          "topics": {
+            "example": [
+              {
+                "name": "Pureza",
+                "value": "A pureza do produto pode variar entre 90% e 95%"
+              },
+              {
+                "name": "Densidade",
+                "value": "A densidade é de 1.32 g/cm³ a 20°C"
+              },
+              {
+                "name": "Solubilidade",
+                "value": "Solúvel em água a uma concentração de aproximadamente 360g/L a 20°C."
+              },
+              {
+                "name": "Composicao Química",
+                "value": "Cl- (íon cloreto): 60.66%, Na+ (íon sódio): 39.34%"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateTopicDto"
+            }
+          },
+          "data": {
+            "example": {
+              "title": "Composição Química",
+              "headers": [
+                "Pureza",
+                "Densidade",
+                "Solubilidade",
+                "Composição Química"
+              ],
+              "rows": [
+                [
+                  "row1",
+                  "row1",
+                  "row1",
+                  "row1",
+                  "row1",
+                  "row1"
+                ],
+                [
+                  "row2",
+                  "row2",
+                  "row2",
+                  "row2",
+                  "row2",
+                  "row2"
+                ]
+              ]
+            },
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreateSpecificationDto"
+              }
+            ]
+          }
+        },
+        "required": [
+          "product_title",
+          "item_in_table",
+          "topics",
+          "data"
+        ]
+      },
+      "CreateProductSpecificationTsvDto": {
+        "type": "object",
+        "properties": {
+          "product_title": {
+            "type": "string",
+            "example": "Cloreto de Sódio - Swagger specification Tsv"
+          },
+          "segments": {
+            "example": [
+              "agricultura",
+              "tintas_e_resinas",
+              "tratamento_de_agua",
+              "cuidados_em_casa"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "item_in_table": {
+            "example": [
+              {
+                "name": "Nome Comercial",
+                "value": "Cloreto de Sódio"
+              },
+              {
+                "name": "Nome Químico",
+                "value": "Nome químico"
+              },
+              {
+                "name": "Função",
+                "value": "Função"
+              },
+              {
+                "name": "Aplicação",
+                "value": "Aplicação"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateItemInTableDto"
+            }
+          },
+          "topics": {
+            "example": [
+              {
+                "name": "Pureza",
+                "value": "A pureza do produto pode variar entre 90% e 95%"
+              },
+              {
+                "name": "Densidade",
+                "value": "A densidade é de 1.32 g/cm³ a 20°C"
+              },
+              {
+                "name": "Solubilidade",
+                "value": "Solúvel em água a uma concentração de aproximadamente 360g/L a 20°C."
+              },
+              {
+                "name": "Composicao Química",
+                "value": "Cl- (íon cloreto): 60.66%, Na+ (íon sódio): 39.34%"
+              }
+            ],
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateTopicDto"
+            }
+          },
+          "data": {
+            "type": "string",
+            "example": "Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2\trow2\trow2"
+          }
+        },
+        "required": [
+          "product_title",
+          "segments",
+          "item_in_table",
+          "topics",
+          "data"
+        ]
+      },
+      "GetProductListFilterDto": {
+        "type": "object",
+        "properties": {
+          "search": {
+            "type": "string"
+          },
+          "segments": {
+            "type": "array",
+            "description": "Array of segments to filter products",
+            "example": [
+              "agricultura",
+              "tintas_e_resinas",
+              "tratamento_de_agua",
+              "cuidados_em_casa"
+            ],
+            "items": {
+              "type": "string",
+              "enum": [
+                "agricultura",
+                "tintas_e_resinas",
+                "tratamento_de_agua",
+                "cuidados_em_casa"
+              ]
+            }
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "search",
+          "segments",
+          "is_active"
+        ]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "password"
+        ]
+      },
+      "UserEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "created_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "updated_at",
+          "name",
+          "email"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "AuthEntity": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "accessToken"
+        ]
+      }
+    }
+  }
+}

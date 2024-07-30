@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Product {
+  id                               Int                          @id @default(autoincrement())
+  product_title                    String
+  is_active                        Boolean?                     @default(true)
+  is_deleted                       Boolean?                     @default(false)
+  created_at                       DateTime                     @default(now())
+  updated_at                       DateTime                     @updatedAt
+  product_image                    ProductImage[]
+  product_image_compacted          ProductImageCompacted[]
+  product_in_table_segments_values ProductInTableSegmentValue[]
+  product_in_table_values          ProductInTableValue[]
+  product_specifications_values    ProductSpecification[]
+  product_topics                   ProductTopicValue[]
+}
+
+model ProductImage {
+  id           Int     @id @default(autoincrement())
+  source_image Bytes
+  product_id   Int
+  product      Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
+
+model ProductImageCompacted {
+  id           Int     @id @default(autoincrement())
+  source_image Bytes
+  product_id   Int
+  product      Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
+
+model ProductSegmentKey {
+  id                     Int                          @id @default(autoincrement())
+  key                    String                       @unique
+  name                   String
+  description            String?
+  product_segment_values ProductInTableSegmentValue[]
+}
+
+model ProductInTableSegmentValue {
+  id                      Int               @id @default(autoincrement())
+  product_id              Int
+  product_segment_key_id  Int
+  product_in_table_key_id Int
+  product                 Product           @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_in_table_key    ProductInTableKey @relation(fields: [product_in_table_key_id], references: [id], onDelete: Cascade)
+  product_segment_key     ProductSegmentKey @relation(fields: [product_segment_key_id], references: [id], onDelete: Cascade)
+
+  @@unique([product_id, product_segment_key_id], map: "unique_product_segment_per_product")
+}
+
+model ProductInTableKey {
+  id                              Int                          @id @default(autoincrement())
+  key                             String                       @unique
+  name                            String
+  description                     String?
+  product_in_table_segment_values ProductInTableSegmentValue[]
+  product_in_table_values         ProductInTableValue[]
+}
+
+model ProductInTableValue {
+  id                      Int               @id @default(autoincrement())
+  product_in_table_key_id Int
+  value                   String            @default("-")
+  product_id              Int
+  product                 Product           @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_in_table_key    ProductInTableKey @relation(fields: [product_in_table_key_id], references: [id], onDelete: Cascade)
+
+  @@unique([product_id, product_in_table_key_id], map: "unique_product_in_table_per_product")
+}
+
+model ProductTopicKey {
+  id                   Int                 @id @default(autoincrement())
+  key                  String              @unique
+  name                 String
+  description          String?
+  product_topic_values ProductTopicValue[]
+}
+
+model ProductTopicValue {
+  id                   Int             @id @default(autoincrement())
+  value                String
+  product_id           Int
+  product_topic_key_id Int
+  product              Product         @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_topic_key    ProductTopicKey @relation(fields: [product_topic_key_id], references: [id], onDelete: Cascade)
+
+  @@unique([product_id, product_topic_key_id], map: "unique_product_topic_per_product")
+}
+
+model ProductSpecification {
+  id         Int     @id @default(autoincrement())
+  value      String
+  product_id Int
+  product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
