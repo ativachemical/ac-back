@@ -18,6 +18,8 @@ async function bootstrap() {
         const allowedOrigins = [
           'https://www.ativachemical.com',
           'https://ac-front-git-development-felipes-projects-32373246.vercel.app',
+          'https://ac-front.vercel.app',
+          'https://ac-front-git-development-ativachemicals-projects.vercel.app',
         ];
         if (allowedOrigins.includes(origin)) {
           callback(null, true);
