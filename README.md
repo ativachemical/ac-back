@@ -94,6 +94,9 @@ npm i -D ts-node typescript @types/node
 #### Prisma ORM
 
 ```bash
+# usar o shadow database
+npx prisma migrate dev --name migration_name
+
 # Puxar dados existentes do banco para o schema.prisma
 npx prisma db pull
 

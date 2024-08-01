@@ -17,7 +17,7 @@ async function bootstrap() {
       } else {
         const allowedOrigins = [
           'https://www.ativachemical.com',
-          'https://ac-front-git-development-felipes-projects-32373246.vercel.app',
+          'https://ativachemical.com',
           'https://ac-front.vercel.app',
           'https://ac-front-git-development-ativachemicals-projects.vercel.app',
           'ac-front-ativachemicals-projects.vercel.app',
