@@ -37,35 +37,27 @@ export class ProductService {
           const keyName = toSnakeCase(name);
           const keySegment = toSnakeCase(segment);
 
-          let productSegmentKey = await this.prisma.productEnumKey.findUnique({
+          const productSegmentKey = await this.prisma.productEnumKey.upsert({
             where: { key: keySegment },
+            update: {},
+            create: {
+              key: keySegment,
+              name: segment,
+            },
           });
 
-          if (!productSegmentKey) {
-            productSegmentKey = await this.prisma.productEnumKey.create({
-              data: {
-                key: keySegment,
-                name: segment,
-              },
-            });
-          }
-
-          let productInTableKey = await this.prisma.productKey.findUnique({
+          const productKey = await this.prisma.productKey.upsert({
             where: { key: keyName },
+            update: {},
+            create: {
+              key: keyName,
+              name: name,
+            },
           });
-
-          if (!productInTableKey) {
-            productInTableKey = await this.prisma.productKey.create({
-              data: {
-                key: keyName,
-                name: name,
-              },
-            });
-          }
 
           return {
             product_enum_key_id: productSegmentKey.id,
-            product_key_id: productInTableKey.id,
+            product_key_id: productKey.id,
           };
         }),
     );
@@ -177,12 +169,12 @@ export class ProductService {
             });
           }
 
-          let productInTableKey = await this.prisma.productKey.findUnique({
+          let productKey = await this.prisma.productKey.findUnique({
             where: { key: keyName },
           });
 
-          if (!productInTableKey) {
-            productInTableKey = await this.prisma.productKey.create({
+          if (!productKey) {
+            productKey = await this.prisma.productKey.create({
               data: {
                 key: keyName,
                 name: name,
@@ -192,7 +184,7 @@ export class ProductService {
 
           return {
             product_enum_key_id: productSegmentKey.id,
-            product_key_id: productInTableKey.id,
+            product_key_id: productKey.id,
           };
         }),
     );

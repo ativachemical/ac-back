@@ -120,9 +120,4 @@ export class CreateProductDto {
       'Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2\trow2\trow2',
   })
   readonly data?: string;
-
-  @IsOptional()
-  @ApiProperty({ type: 'string', format: 'binary',})
-  // readonly image?: Buffer;
-  readonly image?: Express.Multer.File;
 }

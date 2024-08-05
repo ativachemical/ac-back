@@ -100,6 +100,7 @@ model ProductTopicValue {
 model ProductSpecificationTable {
   id         Int     @id @default(autoincrement())
   value      String
+  name       String? @default("")
   product_id Int
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
