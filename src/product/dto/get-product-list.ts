@@ -6,7 +6,7 @@ export class ProductListItemDto {
   id: number;
 
   @ApiProperty()
-  is_active: boolean;
+  is_inactived: boolean;
   @ApiProperty()
   rows: (string | string[])[];
 }

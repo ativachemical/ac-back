@@ -15,12 +15,10 @@ import {
   UseGuards,
   Query,
   ParseBoolPipe,
+  Req,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import {
-  CreateProductSpecificationJsonDto,
-  CreateProductSpecificationTsvDto,
-} from './dto/create-product';
+import { CreateProductDto } from './dto/create-product';
 import { GetProductListDto } from './dto/get-product-list';
 import { Product } from './interfaces/get-product-by-id.interface';
 import { GetProductListFilterDto } from './dto/get-product-list-filter';
@@ -30,6 +28,7 @@ import {
   ApiConsumes,
   ApiQuery,
   ApiTags,
+  ApiOperation,
 } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -39,22 +38,69 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('specification-json-format')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async createProductSpecificationJson(
-    @Body() createProductDto: CreateProductSpecificationJsonDto,
-  ) {
-    return this.productService.createProductSpecificationJson(createProductDto);
-  }
+  // @Post()
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // async createProduct(@Body() createProductDto: CreateProductDto) {
+  //   return this.productService.createProduct(createProductDto);
+  // }
 
-  @Post('specification-tsv-format')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async createProductSpecificationTsv(
-    @Body() createProductDto: CreateProductSpecificationTsvDto,
+  @Post()
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        image: {
+          type: 'string',
+          format: 'binary',
+        },
+        createProductDto: {
+          type: 'object',
+          example: JSON.stringify({
+            product_title: "Cloreto de Sódio - Swagger specification Tsv",
+            comercial_name: "Cloreto de Sódio",
+            chemical_name: "Nome químico",
+            function: "Função",
+            application: "Aplicação",
+            product_enums: [
+              {
+                name: "Segmentos",
+                value: ["agricultura", "tintas_e_resinas", "tratamento_de_agua", "cuidados_em_casa"],
+              },
+            ],
+            topics: [
+              {
+                name: "Pureza",
+                value: "A pureza do produto pode variar entre 90% e 95%",
+              },
+              {
+                name: "Densidade",
+                value: "A densidade é de 1.32 g/cm³ a 20°C",
+              },
+              {
+                name: "Solubilidade",
+                value: "Solúvel em água a uma concentração de aproximadamente 360g/L a 20°C.",
+              },
+              {
+                name: "Composicao Química",
+                value: "Cl- (íon cloreto): 60.66%, Na+ (íon sódio): 39.34%",
+              },
+            ],
+            data: "Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2\trow2\trow2",
+          }),
+        },
+      },
+    },
+  })
+  async createProduct(
+    @UploadedFile() image: Express.Multer.File,
+    @Body('createProductDto') createProductDto: string,
   ) {
-    return this.productService.createProductSpecificationTsv(createProductDto);
+    const parsedCreateProductDto: CreateProductDto = JSON.parse(createProductDto);
+    const imageBuffer = image ? image.buffer : null;
+    return this.productService.createProduct(parsedCreateProductDto, imageBuffer);
   }
 
   @Delete(':id')
@@ -75,36 +121,20 @@ export class ProductController {
     return this.productService.changeDeleteStatusProduct(id, isDeleted);
   }
 
-  @Put('specification-json-format/:id')
+  @Put(':id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async updateProductSpecificationJson(
+  async updateProduct(
     @Param('id', ParseIntPipe) id: number, // Utilize ParseIntPipe para converter o id para número
-    @Body() updateProductDto: CreateProductSpecificationTsvDto,
+    @Body() updateProductDto: CreateProductDto,
   ) {
-    return this.productService.updateProductSpecificationTsv(
-      id,
-      updateProductDto,
-    );
+    return this.productService.updateProduct(id, updateProductDto);
   }
 
-  @Put('specification-tsv-format/:id')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  async updateProductSpecificationTsv(
-    @Param('id', ParseIntPipe) id: number, // Utilize ParseIntPipe para converter o id para número
-    @Body() updateProductDto: CreateProductSpecificationTsvDto,
-  ) {
-    return this.productService.updateProductSpecificationTsv(
-      id,
-      updateProductDto,
-    );
-  }
-
-  @Get('specification-tsv-format/:id')
-  async getProductByIdSpecificationTsv(@Param('id', ParseIntPipe) id: number) {
+  @Get(':id')
+  async getProductById(@Param('id', ParseIntPipe) id: number) {
     try {
-      return await this.productService.getProductByIdSpecificationTsv(id);
+      return await this.productService.getProductById(id);
     } catch (error) {
       throw new HttpException(
         {
@@ -119,38 +149,18 @@ export class ProductController {
     }
   }
 
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('specification-json-format/:id')
-  async getProductByIdSpecificationJson(@Param('id', ParseIntPipe) id: number) {
-    try {
-      return await this.productService.getProductByIdSpecificationJson(id);
-    } catch (error) {
-      throw new HttpException(
-        {
-          status: HttpStatus.NOT_FOUND,
-          error: `id ${id} was NOT_FOUND`,
-        },
-        HttpStatus.FORBIDDEN,
-        {
-          cause: error,
-        },
-      );
-    }
-  }
-
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Get('product-in-table-key')
-  async getProductInTableKeys() {
-    try {
-      return await this.productService.getProductInTableKeys();
-    } catch (error) {
-      throw new HttpException({}, HttpStatus.FORBIDDEN, {
-        cause: error,
-      });
-    }
-  }
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard)
+  // @Get('product-in-table-key')
+  // async getProductInTableKeys() {
+  //   try {
+  //     return await this.productService.getProductInTableKeys();
+  //   } catch (error) {
+  //     throw new HttpException({}, HttpStatus.FORBIDDEN, {
+  //       cause: error,
+  //     });
+  //   }
+  // }
 
   @Post('filter')
   @ApiBody({ type: GetProductListFilterDto })
@@ -162,57 +172,33 @@ export class ProductController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Post(':id/upload-images')
-  @UseInterceptors(
-    FilesInterceptor('images', 10, {
-      limits: {
-        fileSize: 1000 * 1000, // 1MB limit per file
-      },
-      fileFilter: (req, file, callback) => {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-          // Retorna erro 415 caso o formato não seja JPG ou JPEG
-          return callback(
-            new HttpException(
-              'Only JPG images are allowed',
-              HttpStatus.UNSUPPORTED_MEDIA_TYPE,
-            ),
-            false,
-          );
-        }
-        callback(null, true);
-      },
-    }),
-  )
-  @ApiConsumes('multipart/form-data') // Indica que o endpoint consome multipart/form-data
+  @Post('upload-image/:id')
+  @ApiConsumes('multipart/form-data') // Especifica que o endpoint consome dados em multipart/form-data
   @ApiBody({
-    description: 'Images to upload',
     schema: {
       type: 'object',
       properties: {
-        images: {
-          type: 'array',
-          items: {
-            type: 'string',
-            format: 'binary', // Formato binário para arquivos
-          },
+        file: {
+          type: 'string',
+          format: 'binary',
         },
       },
     },
   })
+  @UseInterceptors(FileInterceptor('file'))
   async uploadProductImages(
     @Param('id', ParseIntPipe) productId: number,
-    @UploadedFiles() images: Array<Express.Multer.File>,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     try {
-      // Se chegou aqui, as imagens foram validadas e podem ser processadas
-      for (const image of images) {
-        await this.productService.saveProductImage(productId, image.buffer);
+      if (!file) {
+        throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
       }
-      return { message: 'Images uploaded successfully' };
+      await this.productService.saveProductImage(productId, file.buffer);
+      return { message: 'Image uploaded successfully' };
     } catch (error) {
-      // Captura qualquer erro que ocorra durante o processamento das imagens
       throw new HttpException(
-        'Failed to upload images',
+        'Failed to upload image',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

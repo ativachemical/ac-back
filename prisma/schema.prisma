@@ -19,18 +19,21 @@ model User {
 }
 
 model Product {
-  id                               Int                          @id @default(autoincrement())
-  product_title                    String
-  is_active                        Boolean?                     @default(true)
-  is_deleted                       Boolean?                     @default(false)
-  created_at                       DateTime                     @default(now())
-  updated_at                       DateTime                     @updatedAt
-  product_image                    ProductImage[]
-  product_image_compacted          ProductImageCompacted[]
-  product_in_table_segments_values ProductInTableSegmentValue[]
-  product_in_table_values          ProductInTableValue[]
-  product_specifications_values    ProductSpecification[]
-  product_topics                   ProductTopicValue[]
+  id                         Int                          @id @default(autoincrement())
+  product_title              String
+  is_inactived                Boolean?                    @default(false)
+  is_deleted                 Boolean?                     @default(false)
+  comercial_name             String                       @default("")
+  chemical_name              String                       @default("")
+  function                   String                       @default("")
+  application                String                       @default("")
+  created_at                 DateTime                     @default(now())
+  updated_at                 DateTime                     @updatedAt
+  product_images             ProductImage[]
+  product_image_compacteds   ProductImageCompacted[]
+  product_values             ProductValue[]
+  product_specification_table ProductSpecificationTable[]
+  product_topic_values       ProductTopicValue[]
 }
 
 model ProductImage {
@@ -47,51 +50,39 @@ model ProductImageCompacted {
   product      Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
 
-model ProductSegmentKey {
-  id                     Int                          @id @default(autoincrement())
-  key                    String                       @unique
-  name                   String
-  description            String?
-  product_segment_values ProductInTableSegmentValue[]
+model ProductEnumKey {
+  id             Int           @id @default(autoincrement())
+  key            String        @unique
+  name           String
+  description    String?
+  product_values ProductValue[]
 }
 
-model ProductInTableSegmentValue {
-  id                      Int               @id @default(autoincrement())
-  product_id              Int
-  product_segment_key_id  Int
-  product_in_table_key_id Int
-  product                 Product           @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  product_in_table_key    ProductInTableKey @relation(fields: [product_in_table_key_id], references: [id], onDelete: Cascade)
-  product_segment_key     ProductSegmentKey @relation(fields: [product_segment_key_id], references: [id], onDelete: Cascade)
+model ProductValue {
+  id                  Int             @id @default(autoincrement())
+  product_id          Int
+  product_enum_key_id Int
+  product_key_id      Int
+  product             Product         @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product_key         ProductKey      @relation(fields: [product_key_id], references: [id], onDelete: Cascade)
+  product_enum_key    ProductEnumKey  @relation(fields: [product_enum_key_id], references: [id], onDelete: Cascade)
 
-  @@unique([product_id, product_segment_key_id], map: "unique_product_segment_per_product")
+  @@unique([product_id, product_enum_key_id], map: "unique_product_segment_per_product")
 }
 
-model ProductInTableKey {
-  id                              Int                          @id @default(autoincrement())
-  key                             String                       @unique
-  name                            String
-  description                     String?
-  product_in_table_segment_values ProductInTableSegmentValue[]
-  product_in_table_values         ProductInTableValue[]
-}
-
-model ProductInTableValue {
-  id                      Int               @id @default(autoincrement())
-  product_in_table_key_id Int
-  value                   String            @default("-")
-  product_id              Int
-  product                 Product           @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  product_in_table_key    ProductInTableKey @relation(fields: [product_in_table_key_id], references: [id], onDelete: Cascade)
-
-  @@unique([product_id, product_in_table_key_id], map: "unique_product_in_table_per_product")
+model ProductKey {
+  id                 Int           @id @default(autoincrement())
+  key                String        @unique
+  name               String
+  description        String?
+  product_values     ProductValue[]
 }
 
 model ProductTopicKey {
-  id                   Int                 @id @default(autoincrement())
-  key                  String              @unique
-  name                 String
-  description          String?
+  id                 Int             @id @default(autoincrement())
+  key                String          @unique
+  name               String
+  description        String?
   product_topic_values ProductTopicValue[]
 }
 
@@ -106,7 +97,7 @@ model ProductTopicValue {
   @@unique([product_id, product_topic_key_id], map: "unique_product_topic_per_product")
 }
 
-model ProductSpecification {
+model ProductSpecificationTable {
   id         Int     @id @default(autoincrement())
   value      String
   product_id Int

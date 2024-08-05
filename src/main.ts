@@ -16,6 +16,8 @@ async function bootstrap() {
         callback(null, true);
       } else {
         const allowedOrigins = [
+          'http://localhost:3000',
+          'http://localhost:3001',
           'https://www.ativachemical.com',
           'https://ativachemical.com',
           'https://ac-front.vercel.app',

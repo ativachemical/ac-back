@@ -113,9 +113,9 @@ async function main() {
   ];
 
   // Create the item in table keys
-  const createdKeys = await Promise.all(
-    productInTableKeyData.map(createItemInTableKeys),
-  );
+  // const createdKeys = await Promise.all(
+  //   productInTableKeyData.map(createItemInTableKeys),
+  // );
 
   // Create the products
   // const createdProducts = await Promise.all(
@@ -186,15 +186,15 @@ async function main() {
   // console.log('Created products:', createdProducts);
 }
 
-async function createItemInTableKeys(keyData) {
-  const createdKey = await prisma.productInTableKey.upsert({
-    where: { key: keyData.key },
-    update: {},
-    create: keyData,
-  });
+// async function createItemInTableKeys(keyData) {
+//   const createdKey = await prisma.productInTableKey.upsert({
+//     where: { key: keyData.key },
+//     update: {},
+//     create: keyData,
+//   });
 
-  return createdKey;
-}
+//   return createdKey;
+// }
 
 // Execute the main function
 main()

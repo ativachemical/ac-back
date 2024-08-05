@@ -31,9 +31,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -60,9 +58,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -88,9 +84,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -124,9 +118,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -162,9 +154,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -188,9 +178,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -226,9 +214,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -252,9 +238,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ]
+        "tags": ["product"]
       }
     },
     "/product/product-in-table-key": {
@@ -266,9 +250,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -295,9 +277,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ]
+        "tags": ["product"]
       }
     },
     "/product/{id}/upload-images": {
@@ -338,9 +318,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "product"
-        ],
+        "tags": ["product"],
         "security": [
           {
             "bearer": []
@@ -358,9 +336,7 @@
             "description": "Successful response"
           }
         },
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "security": [
           {
             "bearer": []
@@ -386,9 +362,7 @@
             "description": "User Created"
           }
         },
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "security": [
           {
             "bearer": []
@@ -414,9 +388,7 @@
             "description": ""
           }
         },
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "security": [
           {
             "bearer": []
@@ -447,9 +419,7 @@
             }
           }
         },
-        "tags": [
-          "users"
-        ],
+        "tags": ["users"],
         "security": [
           {
             "bearer": []
@@ -483,9 +453,7 @@
             }
           }
         },
-        "tags": [
-          "auth"
-        ]
+        "tags": ["auth"]
       }
     }
   },
@@ -518,10 +486,7 @@
             "example": "Cloreto de Sódio"
           }
         },
-        "required": [
-          "name",
-          "value"
-        ]
+        "required": ["name", "value"]
       },
       "CreateTopicDto": {
         "type": "object",
@@ -535,10 +500,7 @@
             "example": "A pureza do produto pode variar entre 90% e 95%"
           }
         },
-        "required": [
-          "name",
-          "value"
-        ]
+        "required": ["name", "value"]
       },
       "CreateSpecificationDto": {
         "type": "object",
@@ -561,38 +523,10 @@
           },
           "rows": {
             "example": [
-              [
-                "row1",
-                "row1",
-                "row1",
-                "row1",
-                "row1",
-                "row1"
-              ],
-              [
-                "row2",
-                "row2",
-                "row2",
-                "row2",
-                "row2",
-                "row2"
-              ],
-              [
-                "row3",
-                "row3",
-                "row3",
-                "row3",
-                "row3",
-                "row3"
-              ],
-              [
-                "row4",
-                "row4",
-                "row4",
-                "row4",
-                "row4",
-                "row4"
-              ]
+              ["row1", "row1", "row1", "row1", "row1", "row1"],
+              ["row2", "row2", "row2", "row2", "row2", "row2"],
+              ["row3", "row3", "row3", "row3", "row3", "row3"],
+              ["row4", "row4", "row4", "row4", "row4", "row4"]
             ],
             "type": "array",
             "items": {
@@ -600,11 +534,7 @@
             }
           }
         },
-        "required": [
-          "title",
-          "headers",
-          "rows"
-        ]
+        "required": ["title", "headers", "rows"]
       },
       "CreateProductSpecificationJsonDto": {
         "type": "object",
@@ -680,22 +610,8 @@
                 "Composição Química"
               ],
               "rows": [
-                [
-                  "row1",
-                  "row1",
-                  "row1",
-                  "row1",
-                  "row1",
-                  "row1"
-                ],
-                [
-                  "row2",
-                  "row2",
-                  "row2",
-                  "row2",
-                  "row2",
-                  "row2"
-                ]
+                ["row1", "row1", "row1", "row1", "row1", "row1"],
+                ["row2", "row2", "row2", "row2", "row2", "row2"]
               ]
             },
             "allOf": [
@@ -705,12 +621,7 @@
             ]
           }
         },
-        "required": [
-          "product_title",
-          "item_in_table",
-          "topics",
-          "data"
-        ]
+        "required": ["product_title", "item_in_table", "topics", "data"]
       },
       "CreateProductSpecificationTsvDto": {
         "type": "object",
@@ -817,15 +728,11 @@
               ]
             }
           },
-          "is_active": {
+          "is_inactived": {
             "type": "boolean"
           }
         },
-        "required": [
-          "search",
-          "segments",
-          "is_active"
-        ]
+        "required": ["search", "segments", "is_inactived"]
       },
       "CreateUserDto": {
         "type": "object",
@@ -840,11 +747,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "name",
-          "email",
-          "password"
-        ]
+        "required": ["name", "email", "password"]
       },
       "UserEntity": {
         "type": "object",
@@ -867,13 +770,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "id",
-          "created_at",
-          "updated_at",
-          "name",
-          "email"
-        ]
+        "required": ["id", "created_at", "updated_at", "name", "email"]
       },
       "LoginDto": {
         "type": "object",
@@ -885,10 +782,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "email",
-          "password"
-        ]
+        "required": ["email", "password"]
       },
       "AuthEntity": {
         "type": "object",
@@ -897,9 +791,7 @@
             "type": "string"
           }
         },
-        "required": [
-          "accessToken"
-        ]
+        "required": ["accessToken"]
       }
     }
   }

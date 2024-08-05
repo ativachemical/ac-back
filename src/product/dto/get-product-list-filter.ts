@@ -7,12 +7,26 @@ import {
 } from 'class-validator';
 import { Segment } from './enums/segment';
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 
 export class GetProductListFilterDto {
   @ApiProperty()
   @IsString()
+  @ApiProperty({ example: '' })
   search?: string;
 
+  @ApiProperty()
+  @IsString()
+  @ApiProperty({
+    example: [
+      'Nome Comercial',
+      'Nome Químico',
+      'Função',
+      'Aplicação',
+      'Segmentos',
+    ],
+  })
+  columns?: string[];
 
   @ApiProperty({
     description: 'Array of segments to filter products',
@@ -32,5 +46,6 @@ export class GetProductListFilterDto {
 
   @ApiProperty()
   @IsBoolean()
-  is_active: boolean;
+  @ApiProperty({ example: false })
+  is_inactived: boolean;
 }

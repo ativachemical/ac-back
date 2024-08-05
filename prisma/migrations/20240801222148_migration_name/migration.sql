@@ -14,7 +14,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Product" (
     "id" SERIAL NOT NULL,
     "product_title" TEXT NOT NULL,
-    "is_active" BOOLEAN DEFAULT true,
+    "is_inactived" BOOLEAN DEFAULT true,
     "is_deleted" BOOLEAN DEFAULT false,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
