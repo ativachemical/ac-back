@@ -35,8 +35,8 @@ export class UsersController {
   }
 
   @Post()
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Create a new user' })
   @ApiResponse({ status: 201, description: 'User Created' })
   async create(@Body() createUserDto: CreateUserDto) {
