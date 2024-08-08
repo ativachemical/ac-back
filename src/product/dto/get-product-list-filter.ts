@@ -4,6 +4,9 @@ import {
   ArrayNotEmpty,
   IsEnum,
   IsBoolean,
+  IsInt,
+  IsOptional,
+  IsNotEmpty,
 } from 'class-validator';
 import { Segment } from './enums/segment';
 import { ApiProperty } from '@nestjs/swagger';
@@ -18,6 +21,16 @@ export class GetProductListFilterDto {
     description: 'Termo de busca para filtrar os produtos.',
   })
   search?: string;
+
+  @ApiProperty({
+    example: 2,
+    description: 'Limitar retorno dos valores nas colunas.',
+    required: false,
+  })
+  @IsNotEmpty()
+  @Transform(({ value }) => (value ? parseInt(value, 10) : 2))
+  @IsInt()
+  limit_string: number = 2;
 
   @ApiProperty()
   @IsString()

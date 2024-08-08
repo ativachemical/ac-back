@@ -13,7 +13,12 @@ import {
   CreateTopicDto,
 } from './dto/get-product-by-id copy';
 import { GetProductListFilterDto } from './dto/get-product-list-filter';
-import { normalizeString, removeAccents, toSnakeCase } from '../utils';
+import {
+  limitString,
+  normalizeString,
+  removeAccents,
+  toSnakeCase,
+} from '../utils';
 import { ColumnHeader, ColumnHeaderMap } from './dto/enums/column-header';
 import * as sharp from 'sharp'; //img info
 import sizeOf from 'image-size';
@@ -24,7 +29,7 @@ export class ProductService {
 
   async createProduct(createProductDto: CreateProductDto, imageBuffer: Buffer) {
     const {
-      product_title='',
+      product_title = '',
       comercial_name,
       chemical_name,
       function: product_function,
@@ -317,6 +322,7 @@ export class ProductService {
   ): Promise<GetProductListDto> {
     // Definir valor default para o campo search
     const searchTerm = filterDto.search || '';
+    const limit_string = filterDto.limit_string || 100;
 
     // Headers fixos (serão utilizados para correspondência com os valores das colunas)
     const headerNames = [
@@ -411,10 +417,22 @@ export class ProductService {
       items: filteredProducts.map((product) => {
         // Mapeamento de valores baseado nas colunas fornecidas
         const productValuesMap = {
-          [ColumnHeader.NomeComercial]: product.comercial_name,
-          [ColumnHeader.NomeQuimico]: product.chemical_name,
-          [ColumnHeader.Funcao]: product.function,
-          [ColumnHeader.Aplicacao]: product.application,
+          [ColumnHeader.NomeComercial]: limitString(
+            product.comercial_name,
+            limit_string,
+          ),
+          [ColumnHeader.NomeQuimico]: limitString(
+            product.chemical_name,
+            limit_string,
+          ),
+          [ColumnHeader.Funcao]: limitString(
+            product.function,
+            limit_string,
+          ),
+          [ColumnHeader.Aplicacao]: limitString(
+            product.application,
+            limit_string,
+          ),
           [ColumnHeader.Segmentos]: product.product_values
             .filter((v) => v.product_key.key === 'segmentos')
             .map((v) => v.product_enum_key.key),

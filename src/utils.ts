@@ -24,3 +24,8 @@ export function normalizeString(str: string): string {
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 }
+
+export const limitString = (string: string | null, maxLength: number): string | null => {
+  return string && string.length > maxLength ? string.substring(0, maxLength) + '...' : string;
+};
+
