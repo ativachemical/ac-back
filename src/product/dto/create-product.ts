@@ -35,7 +35,7 @@ export class CreateProductDto {
   @ApiProperty({ example: 'Cloreto de Sódio - Swagger specification Tsv' })
   @IsString()
   @IsNotEmpty()
-  readonly product_title: string;
+  readonly product_title?: string;
 
   @IsOptional()
   @IsBoolean()

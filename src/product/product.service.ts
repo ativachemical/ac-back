@@ -24,7 +24,7 @@ export class ProductService {
 
   async createProduct(createProductDto: CreateProductDto, imageBuffer: Buffer) {
     const {
-      product_title,
+      product_title='',
       comercial_name,
       chemical_name,
       function: product_function,
@@ -153,7 +153,7 @@ export class ProductService {
 
           const productSegmentKey = await this.prisma.productEnumKey.upsert({
             where: { key: keySegment },
-            update: {},
+            update: { name: segment },
             create: {
               key: keySegment,
               name: segment,
@@ -162,7 +162,7 @@ export class ProductService {
 
           const productKey = await this.prisma.productKey.upsert({
             where: { key: keyName },
-            update: {},
+            update: { name: name },
             create: {
               key: keyName,
               name: name,
@@ -183,7 +183,7 @@ export class ProductService {
 
         const productTopicKey = await this.prisma.productTopicKey.upsert({
           where: { key },
-          update: {},
+          update: { name: topic.name },
           create: {
             key,
             name: topic.name,
