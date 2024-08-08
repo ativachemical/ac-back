@@ -29,6 +29,7 @@ import {
   ApiQuery,
   ApiTags,
   ApiOperation,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -46,6 +47,8 @@ export class ProductController {
   // }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
   @ApiBody({
@@ -57,46 +60,14 @@ export class ProductController {
           format: 'binary',
         },
         createProductDto: {
-          type: 'object',
-          example: JSON.stringify({
-            product_title: "Cloreto de Sódio - Swagger specification Tsv",
-            comercial_name: "Cloreto de Sódio",
-            chemical_name: "Nome químico",
-            function: "Função",
-            application: "Aplicação",
-            product_enums: [
-              {
-                name: "Segmentos",
-                value: ["agricultura", "tintas_e_resinas", "tratamento_de_agua", "cuidados_em_casa"],
-              },
-            ],
-            topics: [
-              {
-                name: "Pureza",
-                value: "A pureza do produto pode variar entre 90% e 95%",
-              },
-              {
-                name: "Densidade",
-                value: "A densidade é de 1.32 g/cm³ a 20°C",
-              },
-              {
-                name: "Solubilidade",
-                value: "Solúvel em água a uma concentração de aproximadamente 360g/L a 20°C.",
-              },
-              {
-                name: "Composicao Química",
-                value: "Cl- (íon cloreto): 60.66%, Na+ (íon sódio): 39.34%",
-              },
-            ],
-            data: "Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2\trow2\trow2",
-          }),
+          $ref: getSchemaPath(CreateProductDto),
         },
       },
     },
   })
   async createProduct(
     @UploadedFile() image: Express.Multer.File,
-    @Body('createProductDto') createProductDto: string,
+    @Body('createProductDto') createProductDto,
   ) {
     const parsedCreateProductDto: CreateProductDto = JSON.parse(createProductDto);
     const imageBuffer = image ? image.buffer : null;
@@ -148,6 +119,26 @@ export class ProductController {
       );
     }
   }
+
+  @Get('image-supabase-base64/:id')
+  async getProductImageById(@Param('id', ParseIntPipe) id: number) {
+    try {
+      return await this.productService.getProductImageAsBase64(id);
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: `id ${id} was NOT_FOUND`,
+        },
+        HttpStatus.NOT_FOUND,
+        {
+          cause: error,
+        },
+      );
+    }
+  }
+  
+
 
   // @ApiBearerAuth()
   // @UseGuards(JwtAuthGuard)

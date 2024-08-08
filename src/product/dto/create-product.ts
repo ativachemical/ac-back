@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { Segment } from './enums/segment';
 
 export class ProductEnums {
   @IsNotEmpty()
@@ -74,12 +75,12 @@ export class CreateProductDto {
     type: [ProductEnums],
     example: [
       {
-        name: 'Segmentos',
+        name: 'segmentos',
         value: [
-          'agricultura',
-          'tintas_e_resinas',
-          'tratamento_de_agua',
-          'cuidados_em_casa',
+          Segment.Agricultura,
+          Segment.TintasEResinas,
+          Segment.TratamentoDeAgua,
+          Segment.CuidadosEmCasa,
         ],
       },
     ],
@@ -117,7 +118,7 @@ export class CreateProductDto {
   @IsOptional()
   @ApiProperty({
     example:
-      'Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2\trow2\trow2',
+      'Header1\tHeader2\tHeader3\tHeader4\r\nrow1\trow1\trow1\trow1\r\nrow2\trow2\trow2\trow2',
   })
   readonly data?: string;
 }

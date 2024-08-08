@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product';
 import { GetProductListDto, ProductListItemDto } from './dto/get-product-list';
@@ -9,6 +14,9 @@ import {
 } from './dto/get-product-by-id copy';
 import { GetProductListFilterDto } from './dto/get-product-list-filter';
 import { normalizeString, removeAccents, toSnakeCase } from '../utils';
+import { ColumnHeader, ColumnHeaderMap } from './dto/enums/column-header';
+import * as sharp from 'sharp'; //img info
+import sizeOf from 'image-size';
 
 @Injectable()
 export class ProductService {
@@ -118,7 +126,8 @@ export class ProductService {
 
   async updateProduct(
     id: number,
-    createProductDto: CreateProductDto,
+    updateProductDto: CreateProductDto,
+    imageBuffer?: Buffer,
   ): Promise<any> {
     const {
       product_title,
@@ -126,24 +135,10 @@ export class ProductService {
       chemical_name,
       function: product_function,
       application,
-      product_enums,
-      topics,
+      product_enums = [],
+      topics = [],
       data,
-    } = createProductDto;
-
-    // Delete existing values
-    await this.prisma.productEnumKey.deleteMany({
-      where: { product_values: { some: { product_id: id } } },
-    });
-    await this.prisma.productKey.deleteMany({
-      where: { product_values: { some: { product_id: id } } },
-    });
-    await this.prisma.productTopicKey.deleteMany({
-      where: { product_topic_values: { some: { product_id: id } } },
-    });
-    await this.prisma.productSpecificationTable.deleteMany({
-      where: { product_id: id },
-    });
+    } = updateProductDto;
 
     // Processar segmentos em product_enums
     const productEnumValues = await Promise.all(
@@ -156,31 +151,23 @@ export class ProductService {
           const keyName = toSnakeCase(name);
           const keySegment = toSnakeCase(segment);
 
-          let productSegmentKey = await this.prisma.productEnumKey.findUnique({
+          const productSegmentKey = await this.prisma.productEnumKey.upsert({
             where: { key: keySegment },
+            update: {},
+            create: {
+              key: keySegment,
+              name: segment,
+            },
           });
 
-          if (!productSegmentKey) {
-            productSegmentKey = await this.prisma.productEnumKey.create({
-              data: {
-                key: keySegment,
-                name: segment,
-              },
-            });
-          }
-
-          let productKey = await this.prisma.productKey.findUnique({
+          const productKey = await this.prisma.productKey.upsert({
             where: { key: keyName },
+            update: {},
+            create: {
+              key: keyName,
+              name: name,
+            },
           });
-
-          if (!productKey) {
-            productKey = await this.prisma.productKey.create({
-              data: {
-                key: keyName,
-                name: name,
-              },
-            });
-          }
 
           return {
             product_enum_key_id: productSegmentKey.id,
@@ -191,10 +178,9 @@ export class ProductService {
 
     // Processar tópicos
     const topicValues = await Promise.all(
-      (topics || []).map(async (topic) => {
+      topics.map(async (topic) => {
         const key = toSnakeCase(topic.name);
 
-        // Encontrar ou criar ProductTopicKey
         const productTopicKey = await this.prisma.productTopicKey.upsert({
           where: { key },
           update: {},
@@ -211,7 +197,7 @@ export class ProductService {
       }),
     );
 
-    // Criar ou atualizar o produto com todas as informações
+    // Atualizar o produto com todas as informações
     const updatedProduct = await this.prisma.product.update({
       where: { id },
       data: {
@@ -220,21 +206,29 @@ export class ProductService {
         chemical_name: chemical_name || '',
         function: product_function || '',
         application: application || '',
-        is_inactived: createProductDto.is_inactived || false,
-        is_deleted: createProductDto.is_deleted || false,
+        is_inactived: updateProductDto.is_inactived || false,
+        is_deleted: updateProductDto.is_deleted || false,
         product_values: {
+          deleteMany: {}, // Remove all existing product_values for the product
           create: productEnumValues,
         },
         product_topic_values: {
+          deleteMany: {}, // Remove all existing product_topic_values for the product
           create: topicValues,
         },
         product_specification_table: {
+          deleteMany: {},
           create: {
             value: data || '',
           },
         },
       },
     });
+
+    // Salvar a imagem se fornecida
+    if (imageBuffer) {
+      await this.saveProductImage(updatedProduct.id, imageBuffer);
+    }
 
     return updatedProduct;
   }
@@ -306,6 +300,7 @@ export class ProductService {
 
     // Retornar o produto no formato solicitado
     return {
+      id: product.id,
       product_title: product.product_title || '',
       comercial_name: product.comercial_name || '',
       chemical_name: product.chemical_name || '',
@@ -325,11 +320,11 @@ export class ProductService {
 
     // Headers fixos (serão utilizados para correspondência com os valores das colunas)
     const headerNames = [
-      'Nome Comercial',
-      'Nome Químico',
-      'Função',
-      'Aplicação',
-      'Segmentos',
+      ColumnHeader.NomeComercial,
+      ColumnHeader.NomeQuimico,
+      ColumnHeader.Funcao,
+      ColumnHeader.Aplicacao,
+      ColumnHeader.Segmentos,
     ];
 
     // Buscar as chaves dos segmentos
@@ -410,22 +405,24 @@ export class ProductService {
 
     // Preparar o DTO de resposta
     const productListDto: GetProductListDto = {
-      headers: filterDto.columns || headerNames,
+      headers: (filterDto.columns || headerNames).map(
+        (column) => ColumnHeaderMap[column] || column,
+      ),
       items: filteredProducts.map((product) => {
         // Mapeamento de valores baseado nas colunas fornecidas
         const productValuesMap = {
-          'Nome Comercial': product.comercial_name,
-          'Nome Químico': product.chemical_name,
-          Função: product.function,
-          Aplicação: product.application,
-          Segmentos: product.product_values
-            .filter((v) => v.product_key.name === 'Segmentos')
+          [ColumnHeader.NomeComercial]: product.comercial_name,
+          [ColumnHeader.NomeQuimico]: product.chemical_name,
+          [ColumnHeader.Funcao]: product.function,
+          [ColumnHeader.Aplicacao]: product.application,
+          [ColumnHeader.Segmentos]: product.product_values
+            .filter((v) => v.product_key.key === 'segmentos')
             .map((v) => v.product_enum_key.key),
         };
 
         // Construir a lista de valores para 'rows' baseada na sequência de 'columns'
         const productValues = (filterDto.columns || headerNames).map(
-          (column) => productValuesMap[column],
+          (column) => productValuesMap[column] || null,
         );
 
         const productItemDto: ProductListItemDto = {
@@ -443,16 +440,77 @@ export class ProductService {
 
   async saveProductImage(productId: number, imageBytes: Buffer) {
     try {
+      // Deletar todas as imagens associadas ao productId
+      await this.prisma.productImage.deleteMany({
+        where: {
+          product_id: productId,
+        },
+      });
+
+      // Criar a nova imagem
       const savedImage = await this.prisma.productImage.create({
         data: {
           product_id: productId,
-          source_image: imageBytes, // Certifique-se de que imageBytes é do tipo Buffer
+          source_image: imageBytes,
         },
       });
+
       return savedImage;
     } catch (error) {
       console.error('Error saving product image:', error);
       throw error;
+    }
+  }
+
+  async getProductImageAsBase64(productId: number) {
+    try {
+      // Recuperar a imagem do banco de dados com base no ID do produto
+      const image = await this.prisma.productImage.findFirst({
+        where: {
+          product_id: productId,
+        },
+      });
+
+      if (!image) {
+        throw new NotFoundException('Imagem não encontrada');
+      }
+
+      // Converter o buffer da imagem para uma string Base64
+      const base64Image = image.source_image.toString('base64');
+
+      // Usar a biblioteca image-size para obter a resolução da imagem
+      const dimensions = sizeOf(image.source_image);
+      const resolution = `${dimensions.width} x ${dimensions.height}`;
+      const extension = dimensions.type; // Formato da imagem
+      const sizeInBytes = image.source_image.length;
+      const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+      const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
+
+      return {
+        data: {
+          resolution,
+          extension,
+          sizeKB: sizeInKB,
+          sizeMB: sizeInMB,
+          base64Image, // Nome do arquivo para download
+        },
+      };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        // Propagar a exceção NotFoundException
+        throw error;
+      }
+      console.error('Error retrieving product image:', error);
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'Erro ao recuperar imagem',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        {
+          cause: error,
+        },
+      );
     }
   }
 

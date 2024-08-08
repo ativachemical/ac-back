@@ -8,33 +8,40 @@ import {
 import { Segment } from './enums/segment';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { ColumnHeader } from './enums/column-header';
 
 export class GetProductListFilterDto {
   @ApiProperty()
   @IsString()
-  @ApiProperty({ example: '' })
+  @ApiProperty({
+    example: '',
+    description: 'Termo de busca para filtrar os produtos.',
+  })
   search?: string;
 
   @ApiProperty()
   @IsString()
   @ApiProperty({
+    description: 'Lista de colunas a serem retornadas.',
     example: [
-      'Nome Comercial',
-      'Nome Químico',
-      'Função',
-      'Aplicação',
-      'Segmentos',
+      ColumnHeader.NomeComercial,
+      ColumnHeader.NomeQuimico,
+      ColumnHeader.Funcao,
+      ColumnHeader.Aplicacao,
+      ColumnHeader.Segmentos,
     ],
+    isArray: true,
+    enum: ColumnHeader,
   })
-  columns?: string[];
+  columns?: ColumnHeader[];
 
   @ApiProperty({
     description: 'Array of segments to filter products',
     example: [
-      'agricultura',
-      'tintas_e_resinas',
-      'tratamento_de_agua',
-      'cuidados_em_casa',
+      Segment.Agricultura,
+      Segment.TintasEResinas,
+      Segment.TratamentoDeAgua,
+      Segment.CuidadosEmCasa,
     ],
     isArray: true,
     enum: Segment,
@@ -44,8 +51,10 @@ export class GetProductListFilterDto {
   @IsEnum(Segment, { each: true })
   segments?: Segment[];
 
-  @ApiProperty()
+  @ApiProperty({
+    example: false,
+    description: 'Filtrar produtos inativos.',
+  })
   @IsBoolean()
-  @ApiProperty({ example: false })
   is_inactived: boolean;
 }
