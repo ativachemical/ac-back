@@ -60,13 +60,13 @@ async function bootstrap() {
   });
 
   // Middleware para bloquear acesso fora da rota /swagger
-  app.use((req: Request, res, next) => {
-    if (req.originalUrl.startsWith('/swagger')) {
-      return next();
-    } else {
-      return res.status(403).json({ message: 'Access Forbidden' });
-    }
-  });
+  // app.use((req: Request, res, next) => {
+  //   if (req.originalUrl.startsWith('/swagger')) {
+  //     return next();
+  //   } else {
+  //     return res.status(403).json({ message: 'Access Forbidden' });
+  //   }
+  // });
 
   const config = new DocumentBuilder()
     .setTitle('NestJS API')
