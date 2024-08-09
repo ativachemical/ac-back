@@ -11,25 +11,20 @@ async function bootstrap() {
   // Configuração CORS dinâmica para múltiplas origens
   app.enableCors({
     origin: (origin, callback) => {
-      // Permite qualquer origem para a rota do Swagger
-      if (origin === undefined || origin.includes('/swagger')) {
-        callback(null, false);
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://www.ativachemical.com',
+        'https://ativachemical.com',
+        'https://ac-front.vercel.app',
+        'https://ac-front-git-development-ativachemicals-projects.vercel.app',
+        'ac-front-ativachemicals-projects.vercel.app',
+      ];
+  
+      if (allowedOrigins.includes(origin) || origin === undefined) {
+        callback(null, true);
       } else {
-        const allowedOrigins = [
-          'http://localhost:3000',
-          'http://localhost:3001',
-          'https://ac-back.vercel.app',
-          'https://www.ativachemical.com',
-          'https://ativachemical.com',
-          'https://ac-front.vercel.app',
-          'https://ac-front-git-development-ativachemicals-projects.vercel.app',
-          'ac-front-ativachemicals-projects.vercel.app',
-        ];
-        if (allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
+        callback(new Error('Not allowed by CORS'));
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
