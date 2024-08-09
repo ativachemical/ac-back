@@ -11,25 +11,29 @@ async function bootstrap() {
   // Configuração CORS dinâmica para múltiplas origens
   app.enableCors({
     origin: (origin, callback) => {
-      // Permite qualquer origem para a rota do Swagger
-      if (origin === undefined || origin.includes('/swagger')) {
-        callback(null, true);
-      } else {
-        const allowedOrigins = [
-          'http://localhost:3000',
-          'http://localhost:3001',
-          'https://www.ativachemical.com',
-          'https://ativachemical.com',
-          'https://ac-front.vercel.app',
-          'https://ac-front-git-development-ativachemicals-projects.vercel.app',
-          'ac-front-ativachemicals-projects.vercel.app',
-        ];
-        if (allowedOrigins.includes(origin)) {
-          callback(null, true);
-        } else {
-          callback(new Error('Not allowed by CORS'));
-        }
+      // Allow undefined origins (e.g., Swagger UI, server-to-server, Postman)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      // List of allowed origins
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://www.ativachemical.com',
+        'https://ativachemical.com',
+        'https://ac-front.vercel.app',
+        'https://ac-front-git-development-ativachemicals-projects.vercel.app',
+        'https://ac-front-ativachemicals-projects.vercel.app',
+      ];
+
+      // Allow if origin is in the allowedOrigins array
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // If none of the above, deny with CORS error
+      return callback(new Error('Not allowed by CORS'));
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: [

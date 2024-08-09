@@ -21,7 +21,7 @@ model User {
 model Product {
   id                         Int                          @id @default(autoincrement())
   product_title              String
-  is_inactived                Boolean?                    @default(false)
+  is_inactived               Boolean?                     @default(false)
   is_deleted                 Boolean?                     @default(false)
   comercial_name             String                       @default("")
   chemical_name              String                       @default("")
