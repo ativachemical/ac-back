@@ -12,6 +12,7 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       // Allow undefined origins (e.g., Swagger UI, server-to-server, Postman)
+      console.log('Request Origin:', origin);
       if (!origin) {
         return callback(null, true);
       }
@@ -31,6 +32,8 @@ async function bootstrap() {
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
+
+      console.error('CORS Blocked Origin:', origin); 
 
       // If none of the above, deny with CORS error
       return callback(new Error('Not allowed by CORS'));
