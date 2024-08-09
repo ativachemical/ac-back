@@ -13,11 +13,12 @@ async function bootstrap() {
     origin: (origin, callback) => {
       // Permite qualquer origem para a rota do Swagger
       if (origin === undefined || origin.includes('/swagger')) {
-        callback(null, true);
+        callback(null, false);
       } else {
         const allowedOrigins = [
           'http://localhost:3000',
           'http://localhost:3001',
+          'https://ac-back.vercel.app',
           'https://www.ativachemical.com',
           'https://ativachemical.com',
           'https://ac-front.vercel.app',
