@@ -14,6 +14,7 @@ async function bootstrap() {
       const allowedOrigins = [
         'http://localhost:3000',
         'http://localhost:3001',
+        'https://ac-back.vercel.app',
         'https://www.ativachemical.com',
         'https://ativachemical.com',
         'https://ac-front.vercel.app',

@@ -211,6 +211,7 @@ export class ProductService {
         chemical_name: chemical_name || '',
         function: product_function || '',
         application: application || '',
+        updated_at: new Date(),
         is_inactived: updateProductDto.is_inactived || false,
         is_deleted: updateProductDto.is_deleted || false,
         product_values: {
@@ -425,10 +426,7 @@ export class ProductService {
             product.chemical_name,
             limit_string,
           ),
-          [ColumnHeader.Funcao]: limitString(
-            product.function,
-            limit_string,
-          ),
+          [ColumnHeader.Funcao]: limitString(product.function, limit_string),
           [ColumnHeader.Aplicacao]: limitString(
             product.application,
             limit_string,
