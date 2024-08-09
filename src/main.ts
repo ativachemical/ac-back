@@ -4,6 +4,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { PrismaClientExceptionFilter } from './common/filters/prisma-exception.filter';
 import { resolve } from 'path';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
+import { Request } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -28,6 +29,10 @@ async function bootstrap() {
         'https://ac-front-ativachemicals-projects.vercel.app',
       ];
 
+      //Permitir acesso à rota /swagger
+      if (origin.includes('/swagger')) {
+        return callback(null, true);
+      }
       // Allow if origin is in the allowedOrigins array
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
@@ -52,6 +57,15 @@ async function bootstrap() {
       'X-Api-Version',
     ],
     credentials: true,
+  });
+
+  // Middleware para bloquear acesso fora da rota /swagger
+  app.use((req: Request, res, next) => {
+    if (req.originalUrl.startsWith('/swagger')) {
+      return next();
+    } else {
+      return res.status(403).json({ message: 'Access Forbidden' });
+    }
   });
 
   const config = new DocumentBuilder()
