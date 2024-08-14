@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './interfaces/user.interface';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-export const roundsOfHashing = 10;
+export const roundsOfHashing = process.env.ROUNDS_OF_HASHING;
 
 @Injectable()
 export class UsersService {
@@ -21,7 +21,7 @@ export class UsersService {
 
     const data = {
       ...rest,
-      password: hashedPassword
+      password: hashedPassword,
     };
 
     return this.prisma.user.create({
@@ -56,7 +56,7 @@ export class UsersService {
     const { ...rest } = updateUserDto;
 
     const data = {
-      ...rest
+      ...rest,
     };
 
     return this.prisma.user.update({
