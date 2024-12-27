@@ -78,6 +78,7 @@ export class ProductController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   async deleteProduct(@Param('id', ParseIntPipe) id: number) {
+    //
     return this.productService.deleteProduct(id);
   }
 
