@@ -70,4 +70,11 @@ export class GetProductListFilterDto {
   })
   @IsBoolean()
   is_inactived: boolean;
+
+  @ApiProperty({
+    example: false,
+    description: 'Filtrar produtos deletados.',
+  })
+  @IsBoolean()
+  is_deleted: boolean;
 }

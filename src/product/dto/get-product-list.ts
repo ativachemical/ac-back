@@ -7,6 +7,10 @@ export class ProductListItemDto {
 
   @ApiProperty()
   is_inactived: boolean;
+
+  @ApiProperty()
+  is_deleted: boolean;
+  
   @ApiProperty()
   rows: (string | string[])[];
 }

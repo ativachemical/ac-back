@@ -307,6 +307,8 @@ export class ProductService {
     // Retornar o produto no formato solicitado
     return {
       id: product.id,
+      is_deleted: product.is_deleted,
+      is_inactived: product.is_inactived,
       product_title: product.product_title || '',
       comercial_name: product.comercial_name || '',
       chemical_name: product.chemical_name || '',
@@ -366,11 +368,18 @@ export class ProductService {
       };
     }
 
+    let isDeletedFilter = {};
+    if (filterDto.is_deleted !== undefined) {
+      isDeletedFilter = {
+        is_deleted: filterDto.is_deleted,
+      };
+    }
+
     // Buscar produtos com base nos filtros
     const products = await this.prisma.product.findMany({
       where: {
         ...isActiveFilter,
-        is_deleted: false,
+        ...isDeletedFilter,
         ...(segmentKeyIds.length > 0
           ? {
               product_values: {
@@ -444,6 +453,7 @@ export class ProductService {
         const productItemDto: ProductListItemDto = {
           id: product.id,
           is_inactived: product.is_inactived,
+          is_deleted: product.is_deleted,
           rows: productValues,
         };
 
