@@ -12,8 +12,7 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'http://localhost:3000',
-        'http://localhost:3001',
+        'http://localhost:5000',
         'https://ac-back.vercel.app',
         'https://www.ativachemical.com',
         'https://ativachemical.com',
@@ -78,7 +77,7 @@ async function bootstrap() {
     console.log(`Swagger JSON file written to: '/swagger-static/swagger.json'`);
   }
 
-  await app.listen(process.env.PORT || 3000);
+  await app.listen(process.env.PORT || 5000);
 }
 
 bootstrap();

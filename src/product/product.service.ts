@@ -339,7 +339,7 @@ export class ProductService {
     // Buscar as chaves dos segmentos
     let segmentKeyIds: number[] = [];
 
-    if (filterDto.segments && filterDto.segments.length > 0) {
+    if (filterDto.segments && filterDto.segments?.length > 0) {
       const segmentKeys = await this.prisma.productEnumKey.findMany({
         where: {
           key: {
@@ -352,9 +352,7 @@ export class ProductService {
       });
 
       if (segmentKeys.length === 0) {
-        throw new Error(
-          `Nenhum ProductSegmentKey encontrado para as chaves fornecidas: ${filterDto.segments.join(', ')}`,
-        );
+        segmentKeyIds = [null];
       }
 
       segmentKeyIds = segmentKeys.map((segmentKey) => segmentKey.id);
@@ -390,7 +388,11 @@ export class ProductService {
                 },
               },
             }
-          : {}),
+          : {
+            product_values: {
+              none: {},
+            },
+          }),
       },
       include: {
         product_values: {
