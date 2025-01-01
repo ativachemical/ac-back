@@ -12,7 +12,7 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'http://localhost:3000/products',
+        'http://localhost:3000',
         'http://localhost:5000',
         'https://ac-back.vercel.app',
         'https://www.ativachemical.com',
