@@ -326,19 +326,19 @@ export class ProductService {
     // Definir valor default para o campo search
     const searchTerm = filterDto.search || '';
     const limit_string = filterDto.limit_string || 100;
-
-    // Headers fixos (serão utilizados para correspondência com os valores das colunas)
+  
+    // Headers fixos
     const headerNames = [
       ColumnHeader.NomeComercial,
       ColumnHeader.NomeQuimico,
       ColumnHeader.Funcao,
       ColumnHeader.Aplicacao,
       ColumnHeader.Segmentos,
+      ColumnHeader.Download,
     ];
-
+  
     // Buscar as chaves dos segmentos
     let segmentKeyIds: number[] = [];
-
     if (filterDto.segments && filterDto.segments?.length > 0) {
       const segmentKeys = await this.prisma.productEnumKey.findMany({
         where: {
@@ -350,29 +350,20 @@ export class ProductService {
           id: true,
         },
       });
-
-      if (segmentKeys.length === 0) {
-        segmentKeyIds = [null];
-      }
-
       segmentKeyIds = segmentKeys.map((segmentKey) => segmentKey.id);
     }
-
+  
     // Configurar o filtro de status
-    let isActiveFilter = {};
-    if (filterDto.is_inactived !== undefined) {
-      isActiveFilter = {
-        is_inactived: filterDto.is_inactived,
-      };
-    }
-
-    let isDeletedFilter = {};
-    if (filterDto.is_deleted !== undefined) {
-      isDeletedFilter = {
-        is_deleted: filterDto.is_deleted,
-      };
-    }
-
+    const isActiveFilter =
+      filterDto.is_inactived !== undefined
+        ? { is_inactived: filterDto.is_inactived }
+        : {};
+  
+    const isDeletedFilter =
+      filterDto.is_deleted !== undefined
+        ? { is_deleted: filterDto.is_deleted }
+        : {};
+  
     // Buscar produtos com base nos filtros
     const products = await this.prisma.product.findMany({
       where: {
@@ -389,10 +380,10 @@ export class ProductService {
               },
             }
           : {
-            product_values: {
-              none: {},
-            },
-          }),
+              product_values: {
+                none: {},
+              },
+            }),
       },
       include: {
         product_values: {
@@ -403,68 +394,79 @@ export class ProductService {
         },
       },
     });
-
+  
     // Normalizar o termo de busca
     const normalizedSearchTerm = normalizeString(searchTerm);
-
+  
     // Filtrar produtos
     const filteredProducts = products.filter((product) => {
       const productValues = [
-        product.comercial_name,
-        product.chemical_name,
-        product.function,
-        product.application,
+        product.comercial_name || '',
+        product.chemical_name || '',
+        product.function || '',
+        product.application || '',
       ].map(normalizeString);
-
+  
       return productValues.some((value) =>
         value.includes(normalizedSearchTerm),
       );
     });
-
+  
     // Preparar o DTO de resposta
     const productListDto: GetProductListDto = {
       headers: (filterDto.columns || headerNames).map(
         (column) => ColumnHeaderMap[column] || column,
       ),
       items: filteredProducts.map((product) => {
+        // Construir o link de download
+        const downloadLink = `https://localhost:5000/download/${product.id}?type=pdf`;
+  
         // Mapeamento de valores baseado nas colunas fornecidas
         const productValuesMap = {
           [ColumnHeader.NomeComercial]: limitString(
-            product.comercial_name,
+            product.comercial_name || '',
             limit_string,
           ),
           [ColumnHeader.NomeQuimico]: limitString(
-            product.chemical_name,
+            product.chemical_name || '',
             limit_string,
           ),
-          [ColumnHeader.Funcao]: limitString(product.function, limit_string),
+          [ColumnHeader.Funcao]: limitString(product.function || '', limit_string),
           [ColumnHeader.Aplicacao]: limitString(
-            product.application,
+            product.application || '',
             limit_string,
           ),
           [ColumnHeader.Segmentos]: product.product_values
             .filter((v) => v.product_key.key === 'segmentos')
-            .map((v) => v.product_enum_key.key),
+            .map((v) => v.product_enum_key.key) || [],
+          [ColumnHeader.Download]:
+            [
+                {
+                  type:'pdf',
+                  link: downloadLink
+                }
+            ],
         };
-
+  
         // Construir a lista de valores para 'rows' baseada na sequência de 'columns'
         const productValues = (filterDto.columns || headerNames).map(
           (column) => productValuesMap[column] || null,
         );
-
+  
         const productItemDto: ProductListItemDto = {
           id: product.id,
           is_inactived: product.is_inactived,
           is_deleted: product.is_deleted,
           rows: productValues,
         };
-
+  
         return productItemDto;
       }),
     };
-
+  
     return productListDto;
   }
+  
 
   async saveProductImage(productId: number, imageBytes: Buffer) {
     try {

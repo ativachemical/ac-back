@@ -4,6 +4,7 @@ export enum ColumnHeader {
   Funcao = 'funcao',
   Aplicacao = 'aplicacao',
   Segmentos = 'segmentos',
+  Download = 'download',
 }
 
 export const ColumnHeaderMap = {
@@ -12,4 +13,5 @@ export const ColumnHeaderMap = {
   [ColumnHeader.Funcao]: 'Função',
   [ColumnHeader.Aplicacao]: 'Aplicação',
   [ColumnHeader.Segmentos]: 'Segmentos',
+  [ColumnHeader.Download]: 'Download',
 };

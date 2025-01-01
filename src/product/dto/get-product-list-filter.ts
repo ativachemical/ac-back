@@ -30,7 +30,7 @@ export class GetProductListFilterDto {
   @IsNotEmpty()
   @Transform(({ value }) => (value ? parseInt(value, 10) : 2))
   @IsInt()
-  limit_string: number = 2;
+  limit_string: number = 25;
 
   @ApiProperty()
   @IsString()
@@ -42,6 +42,7 @@ export class GetProductListFilterDto {
       ColumnHeader.Funcao,
       ColumnHeader.Aplicacao,
       ColumnHeader.Segmentos,
+      ColumnHeader.Download,
     ],
     isArray: true,
     enum: ColumnHeader,

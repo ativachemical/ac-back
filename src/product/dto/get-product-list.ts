@@ -12,7 +12,7 @@ export class ProductListItemDto {
   is_deleted: boolean;
   
   @ApiProperty()
-  rows: (string | string[])[];
+  rows: (string | any[])[];
 }
 export class GetProductListDto {
   @ApiProperty({ type: [String] })
