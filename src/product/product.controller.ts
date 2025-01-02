@@ -16,6 +16,8 @@ import {
   Query,
   ParseBoolPipe,
   Req,
+  Headers,
+  Request,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product';
@@ -33,6 +35,7 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
 
 @ApiTags('product')
 @Controller('product')
@@ -158,8 +161,10 @@ export class ProductController {
   @ApiBody({ type: GetProductListFilterDto })
   async filterProductList(
     @Body() filterDto: GetProductListFilterDto,
+    @Req() req,
   ): Promise<GetProductListDto> {
-    return this.productService.filterProductList(filterDto);
+    const baseUrl = `${req.protocol}://${req.headers.host}`
+    return this.productService.filterProductList(filterDto, baseUrl);
   }
 
   @ApiBearerAuth()

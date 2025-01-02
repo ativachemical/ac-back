@@ -1,4 +1,5 @@
 import {
+  Headers,
   HttpException,
   HttpStatus,
   Injectable,
@@ -322,6 +323,7 @@ export class ProductService {
 
   async filterProductList(
     filterDto: GetProductListFilterDto,
+    baseUrl,
   ): Promise<GetProductListDto> {
     // Definir valor default para o campo search
     const searchTerm = filterDto.search || '';
@@ -418,8 +420,6 @@ export class ProductService {
         (column) => ColumnHeaderMap[column] || column,
       ),
       items: filteredProducts.map((product) => {
-        // Construir o link de download
-        const downloadLink = `https://localhost:5000/download/${product.id}?type=pdf`;
   
         // Mapeamento de valores baseado nas colunas fornecidas
         const productValuesMap = {
@@ -443,7 +443,7 @@ export class ProductService {
             [
                 {
                   type:'pdf',
-                  link: downloadLink
+                  link: `${baseUrl}/download/${product.id}?type=pdf`
                 }
             ],
         };
