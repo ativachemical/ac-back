@@ -738,12 +738,12 @@ export class ProductService {
       const { createdFiles } = await this.fileManagerService.generateConvertedPdfPagesToImage(productDataForPdf, fileName);
 
       // Envia o e-mail com o arquivo anexo
-      // await this.emailService.sendEmailProductAtached(
-      //   informationDownloadProduct.email,
-      //   informationDownloadProduct.username,
-      //   `${productDataForPdf.product_name}.pdf`,
-      //   getPath(`src/assets/temp/pdf-by-images/${fileName}`)
-      // );
+      await this.emailService.sendEmailProductAtached(
+        informationDownloadProduct.email,
+        informationDownloadProduct.username,
+        `${productDataForPdf.product_name}.pdf`,
+        getPath(`src/assets/temp/pdf-by-images/${fileName}`)
+      );
 
       await this.emailService.sendDownloadAlert({
         userName: informationDownloadProduct.username,
