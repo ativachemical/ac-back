@@ -23,6 +23,7 @@ async function bootstrap() {
         'https://ac-back.vercel.app',
         'https://www.ativachemical.com',
         'https://ativachemical.com',
+        'https://ac-back.onrender.com/product/filter',
         'https://ac-front.vercel.app',
         'https://ac-front-git-development-ativachemicals-projects.vercel.app',
         'ac-front-ativachemicals-projects.vercel.app',
