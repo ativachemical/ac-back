@@ -755,7 +755,7 @@ export class ProductService {
         productDataRequest: productDataForPdf.data_request,
       })
 
-      this.fileManagerService.deleteFiles(createdFiles);
+      // this.fileManagerService.deleteFiles(createdFiles);
 
     } catch (error) {
       console.error('Erro durante o processo generatePdfProductAndSendByEmail:', error);
