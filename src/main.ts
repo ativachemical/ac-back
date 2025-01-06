@@ -16,7 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: (origin, callback) => {
       const allowedOrigins = [
-        'ativachemical-development.vercel.app',
+        'https://ativachemical-development.vercel.app',
         'http://localhost:3000',
         'http://localhost:5000',
         'https://ac-back.onrender.com',
