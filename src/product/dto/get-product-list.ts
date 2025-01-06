@@ -1,4 +1,3 @@
-// src/products/dto/get-product-list.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ProductListItemDto {

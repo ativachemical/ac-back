@@ -4,8 +4,8 @@ import { ProductController } from './product.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
-import { EmailService } from 'src/email/email.service';
-import { FileManagerService } from 'src/file-manager/file-manager.service';
+import { EmailService } from '../email/email.service';
+import { FileManagerService } from '../file-manager/file-manager.service';
 
 @Module({
   imports: [

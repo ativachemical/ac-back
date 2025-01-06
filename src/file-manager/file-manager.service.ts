@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as fsPromisses from 'fs/promises';
-import { getPath } from 'src/utils';
+import { getPath } from '../utils';
 import { GenerateProductPdf } from './dto/generate-product-pdf';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as pdfMake from 'pdfmake/build/pdfmake';

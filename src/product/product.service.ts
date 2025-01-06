@@ -25,10 +25,10 @@ import { ColumnHeader, ColumnHeaderMap } from './enums/column-header';
 import sizeOf from 'image-size';
 import { DownloadProductType } from './enums/download';
 import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
-import { EmailService } from 'src/email/email.service';
+import { EmailService } from '../email/email.service';
 import { Segment } from './enums/segment';
-import { GenerateProductPdf, Topics } from 'src/file-manager/dto/generate-product-pdf';
-import { FileManagerService } from 'src/file-manager/file-manager.service';
+import { GenerateProductPdf, Topics } from '../file-manager/dto/generate-product-pdf';
+import { FileManagerService } from '../file-manager/file-manager.service';
 @Injectable()
 export class ProductService {
   constructor(

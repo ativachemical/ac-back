@@ -38,7 +38,7 @@ import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DownloadProductType } from './enums/download';
 import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
-import { FileManagerService } from 'src/file-manager/file-manager.service';
+import { FileManagerService } from '../file-manager/file-manager.service';
 
 
 @ApiTags('product')

@@ -6,7 +6,7 @@ import {
     Matches,
     MinLength,
 } from 'class-validator';
-import { Segment } from 'src/product/enums/segment';
+import { Segment } from '../../product/enums/segment';
 
 export class Topics {
     key: string;

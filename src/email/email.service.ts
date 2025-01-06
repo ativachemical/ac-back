@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { getPath } from 'src/utils';
+import { PrismaService } from '../prisma/prisma.service';
+import { getPath } from '../utils';
 
 @Injectable()
 export class EmailService {
