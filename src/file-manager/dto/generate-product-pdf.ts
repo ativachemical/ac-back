@@ -14,9 +14,11 @@ export class Topics {
 }
 
 export class GenerateProductPdf {
+    product_id: number;
     product_name: string;
     product_image: string;
     segments: Segment[];
     topics: Topics[]
     table: string[][];
+    data_request: string;
 }

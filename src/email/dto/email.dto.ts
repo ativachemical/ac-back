@@ -69,3 +69,13 @@ export class EmailPasswordDto {
   })
   password: string;
 }
+
+export class DownloadAlertRequest {
+  userName: string;
+  company: string;
+  phoneNumber: string;
+  email: string;
+  productName:string;
+  productId:number;
+  productDataRequest:string;
+}

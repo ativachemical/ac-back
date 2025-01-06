@@ -18,6 +18,7 @@ async function bootstrap() {
       const allowedOrigins = [
         'https://ativachemical-development.vercel.app',
         'http://localhost:3000',
+        'http://localhost:3000/products',
         'http://localhost:5000',
         'https://ac-back.onrender.com',
         'https://ac-back.vercel.app',
@@ -48,7 +49,6 @@ async function bootstrap() {
       'Date',
       'X-Api-Version',
     ],
-    credentials: true,
   });
 
   const config = new DocumentBuilder()

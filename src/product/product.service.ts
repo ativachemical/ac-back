@@ -638,11 +638,13 @@ export class ProductService {
 
     // Retornar o produto no formato solicitado
     return {
+      product_id: productId,
       product_name: product.comercial_name || '',
       product_image: base64Image || '',
       segments: segments,
       topics: combinedTopics,
       table: tableData,
+      data_request: new Date().toLocaleString('pt-BR'),
     };
   }
 
@@ -734,15 +736,24 @@ export class ProductService {
     try {
       // Aguarda a execução da função que gera os arquivos e retorna os caminhos dos arquivos
       const { createdFiles } = await this.fileManagerService.generateConvertedPdfPagesToImage(productDataForPdf, fileName);
-    
+
       // Envia o e-mail com o arquivo anexo
       await this.emailService.sendEmailProductAtached(
         informationDownloadProduct.email,
-        'Download Concluído',
         informationDownloadProduct.username,
-        'Humato de potássio.pdf',
+        `${productDataForPdf.product_name}.pdf`,
         getPath(`src/assets/temp/pdf-by-images/${fileName}`)
       );
+
+      await this.emailService.sendDownloadAlert({
+        userName: informationDownloadProduct.username,
+        company: informationDownloadProduct.company,
+        phoneNumber: informationDownloadProduct.phone_number,
+        email: informationDownloadProduct.email,
+        productName: productDataForPdf.product_name,
+        productId: productDataForPdf.product_id,
+        productDataRequest: productDataForPdf.data_request,
+      })
 
       this.fileManagerService.deleteFiles(createdFiles);
 

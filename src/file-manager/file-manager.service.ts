@@ -113,7 +113,6 @@ export class FileManagerService {
     async deleteFile(filePath: string): Promise<void> {
         try {
             await fsPromisses.unlink(filePath);
-            console.log(`Arquivo ${filePath} excluído com sucesso.`);
         } catch (error) {
             console.error(`Erro ao excluir o arquivo: ${error.message}`);
         }
