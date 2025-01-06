@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "npx prisma generate && node -r tsconfig-paths/register dist/main.js",
+    "build": "npx prisma generate && tsc && copyfiles -u 1 src/assets/**/* dist/assets",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
