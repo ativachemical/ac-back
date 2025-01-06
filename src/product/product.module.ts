@@ -4,6 +4,8 @@ import { ProductController } from './product.controller';
 import { PrismaService } from '../prisma/prisma.service';
 import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
+import { EmailService } from 'src/email/email.service';
+import { FileManagerService } from 'src/file-manager/file-manager.service';
 
 @Module({
   imports: [
@@ -12,6 +14,6 @@ import * as multer from 'multer';
     }),
   ],
   controllers: [ProductController],
-  providers: [ProductService, PrismaService],
+  providers: [ProductService, PrismaService, EmailService, FileManagerService],
 })
 export class ProductModule {}

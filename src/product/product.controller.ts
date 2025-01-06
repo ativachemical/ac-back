@@ -18,6 +18,7 @@ import {
   Req,
   Headers,
   Request,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product';
@@ -35,12 +36,18 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { DownloadProductType } from './enums/download';
+import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
+import { FileManagerService } from 'src/file-manager/file-manager.service';
 
 
 @ApiTags('product')
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly fileManagerService: FileManagerService,
+  ) { }
 
   // @Post()
   // @ApiBearerAuth()
@@ -141,7 +148,7 @@ export class ProductController {
       );
     }
   }
-  
+
 
 
   // @ApiBearerAuth()
@@ -165,6 +172,17 @@ export class ProductController {
   ): Promise<GetProductListDto> {
     const baseUrl = `${req.protocol}://${req.headers.host}`
     return this.productService.filterProductList(filterDto, baseUrl);
+  }
+
+  @Post('download/:id')
+  @ApiBody({ type: InformationDownloadProductRequest })
+  async generatePdfProductAndSendByEmail(
+    @Param('id', ParseIntPipe) productId: number,
+    @Query(new ValidationPipe({ transform: true })) downloadType: DownloadProductQueryDto,
+    @Body() informationDownloadProduct: InformationDownloadProductRequest,
+  ): Promise<any> {
+    const productData = await this.productService.getProductDataByIdForPdf(productId);
+    return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
   }
 
   @ApiBearerAuth()

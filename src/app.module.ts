@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EmailModule } from './email/email.module';
+import { FileManagerModule } from './file-manager/file-manager.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { join } from 'path';
       rootPath: join(__dirname, '..', 'node_modules', 'swagger-ui-dist'),
       serveRoot: '/swagger',
     }),
+    EmailModule,
+    FileManagerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

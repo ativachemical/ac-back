@@ -75,16 +75,16 @@ npx prisma init
 npm install class-validator class-transformer
 npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt
 
-nest g module prisma
-nest g service prisma
+npx nest g module prisma
+npx nest g service prisma
 
-nest g module users
-nest g controller users
-nest g service users
+npx nest g module users
+npx nest g controller users
+npx nest g service users
 
-nest g module auth
-nest g service auth
-nest g controller auth
+npx nest g module auth
+npx nest g service auth
+npx nest g controller auth
 
 npx nest generate resource
 npm i -D ts-node typescript @types/node

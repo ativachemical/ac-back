@@ -104,3 +104,12 @@ model ProductSpecificationTable {
   product_id Int
   product    Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
 }
+
+model ProductDownloadHistory {
+  id            Int     @id @default(autoincrement())
+  name          String
+  email         String
+  company       String
+  phone_number  String
+  created_at    DateTime @default(now())
+}

@@ -8,10 +8,10 @@ import {
   IsOptional,
   IsNotEmpty,
 } from 'class-validator';
-import { Segment } from './enums/segment';
+import { Segment } from '../enums/segment';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { ColumnHeader } from './enums/column-header';
+import { ColumnHeader } from '../enums/column-header';
 
 export class GetProductListFilterDto {
   @ApiProperty()

@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 export function removeAccents(str: string): string {
   return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 }
@@ -29,3 +31,7 @@ export const limitString = (string: string | null, maxLength: number): string | 
   return string && string.length > maxLength ? string.substring(0, maxLength) + '...' : string;
 };
 
+export function getPath(relativePath: string): string {
+  const normalizedPath = path.normalize(relativePath.replace(/^\.\//, '')); // Remove './' inicial, se existir
+  return path.join(process.cwd(), normalizedPath);
+}

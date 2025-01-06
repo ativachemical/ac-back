@@ -8,7 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Segment } from './enums/segment';
+import { Segment } from '../enums/segment';
 
 export class ProductEnums {
   @IsNotEmpty()

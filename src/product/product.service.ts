@@ -15,18 +15,27 @@ import {
 } from './dto/get-product-by-id copy';
 import { GetProductListFilterDto } from './dto/get-product-list-filter';
 import {
+  getPath,
   limitString,
   normalizeString,
   removeAccents,
   toSnakeCase,
 } from '../utils';
-import { ColumnHeader, ColumnHeaderMap } from './dto/enums/column-header';
-import * as sharp from 'sharp'; //img info
+import { ColumnHeader, ColumnHeaderMap } from './enums/column-header';
 import sizeOf from 'image-size';
-
+import { DownloadProductType } from './enums/download';
+import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
+import { EmailService } from 'src/email/email.service';
+import { Segment } from './enums/segment';
+import { GenerateProductPdf, Topics } from 'src/file-manager/dto/generate-product-pdf';
+import { FileManagerService } from 'src/file-manager/file-manager.service';
 @Injectable()
 export class ProductService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+    private fileManagerService: FileManagerService,
+  ) { }
 
   async createProduct(createProductDto: CreateProductDto, imageBuffer: Buffer) {
     const {
@@ -328,7 +337,7 @@ export class ProductService {
     // Definir valor default para o campo search
     const searchTerm = filterDto.search || '';
     const limit_string = filterDto.limit_string || 100;
-  
+
     // Headers fixos
     const headerNames = [
       ColumnHeader.NomeComercial,
@@ -338,7 +347,7 @@ export class ProductService {
       ColumnHeader.Segmentos,
       ColumnHeader.Download,
     ];
-  
+
     // Buscar as chaves dos segmentos
     let segmentKeyIds: number[] = [];
     if (filterDto.segments && filterDto.segments?.length > 0) {
@@ -354,18 +363,18 @@ export class ProductService {
       });
       segmentKeyIds = segmentKeys.map((segmentKey) => segmentKey.id);
     }
-  
+
     // Configurar o filtro de status
     const isActiveFilter =
       filterDto.is_inactived !== undefined
         ? { is_inactived: filterDto.is_inactived }
         : {};
-  
+
     const isDeletedFilter =
       filterDto.is_deleted !== undefined
         ? { is_deleted: filterDto.is_deleted }
         : {};
-  
+
     // Buscar produtos com base nos filtros
     const products = await this.prisma.product.findMany({
       where: {
@@ -373,19 +382,19 @@ export class ProductService {
         ...isDeletedFilter,
         ...(segmentKeyIds.length > 0
           ? {
-              product_values: {
-                some: {
-                  product_enum_key_id: {
-                    in: segmentKeyIds,
-                  },
+            product_values: {
+              some: {
+                product_enum_key_id: {
+                  in: segmentKeyIds,
                 },
               },
-            }
+            },
+          }
           : {
-              product_values: {
-                none: {},
-              },
-            }),
+            product_values: {
+              none: {},
+            },
+          }),
       },
       include: {
         product_values: {
@@ -396,10 +405,10 @@ export class ProductService {
         },
       },
     });
-  
+
     // Normalizar o termo de busca
     const normalizedSearchTerm = normalizeString(searchTerm);
-  
+
     // Filtrar produtos
     const filteredProducts = products.filter((product) => {
       const productValues = [
@@ -408,19 +417,19 @@ export class ProductService {
         product.function || '',
         product.application || '',
       ].map(normalizeString);
-  
+
       return productValues.some((value) =>
         value.includes(normalizedSearchTerm),
       );
     });
-  
+
     // Preparar o DTO de resposta
     const productListDto: GetProductListDto = {
       headers: (filterDto.columns || headerNames).map(
         (column) => ColumnHeaderMap[column] || column,
       ),
       items: filteredProducts.map((product) => {
-  
+
         // Mapeamento de valores baseado nas colunas fornecidas
         const productValuesMap = {
           [ColumnHeader.NomeComercial]: limitString(
@@ -441,32 +450,31 @@ export class ProductService {
             .map((v) => v.product_enum_key.key) || [],
           [ColumnHeader.Download]:
             [
-                {
-                  type:'pdf',
-                  link: `${baseUrl}/download/${product.id}?type=pdf`
-                }
+              {
+                type: 'pdf',
+                link: `${baseUrl}/product/download/${product.id}?type=pdf`
+              }
             ],
         };
-  
+
         // Construir a lista de valores para 'rows' baseada na sequência de 'columns'
         const productValues = (filterDto.columns || headerNames).map(
           (column) => productValuesMap[column] || null,
         );
-  
+
         const productItemDto: ProductListItemDto = {
           id: product.id,
           is_inactived: product.is_inactived,
           is_deleted: product.is_deleted,
           rows: productValues,
         };
-  
+
         return productItemDto;
       }),
     };
-  
+
     return productListDto;
   }
-  
 
   async saveProductImage(productId: number, imageBytes: Buffer) {
     try {
@@ -542,6 +550,206 @@ export class ProductService {
         },
       );
     }
+  }
+
+  async getProductDataByIdForPdf(productId: number): Promise<GenerateProductPdf> {
+    // Buscar o produto com os relacionamentos necessários
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+      select: {
+        comercial_name: true,
+        chemical_name: true,
+        function: true,
+        application: true,
+        product_values: {
+          include: {
+            product_key: true,
+            product_enum_key: true,
+          },
+        },
+        product_specification_table: true,
+        product_topic_values: {
+          include: {
+            product_topic_key: true,
+          },
+        },
+      },
+    });
+
+    if (!product) {
+      throw new Error(`Product with id ${productId} not found`);
+    }
+
+    const image = await this.prisma.productImage.findFirst({
+      where: {
+        product_id: productId,
+      },
+    });
+
+    const dimensions = sizeOf(image.source_image);
+    // Converter o buffer da imagem para uma string Base64
+    const base64Image = `data:image/${dimensions.type};base64,${image.source_image.toString('base64')}`;
+
+    // Processar especificações do produto
+    let data = '';
+    if (product.product_specification_table.length > 0) {
+      data = product.product_specification_table[0].value;
+    }
+
+    // Coletar valores dos segmentos
+    const segments: Segment[] = product.product_values.map(
+      (value) => value.product_enum_key.name as Segment,
+    );
+
+    // Mapeamento dos tópicos
+    const topics: Topics[] = product.product_topic_values.map((topic) => ({
+      key: topic.product_topic_key.name,
+      value: topic.value,
+    }));
+
+    const productData = [
+      {
+        key: 'Nome Comercial',
+        value: product.comercial_name || '',
+      },
+      {
+        key: 'Nome Químico',
+        value: product.chemical_name || '',
+      },
+      {
+        key: 'Função',
+        value: product.function || '',
+      },
+      {
+        key: 'Aplicação',
+        value: product.application || '',
+      },
+    ]
+
+    const combinedTopics: Topics[] = productData.concat(topics);
+
+    const processTableData = (tsvData: string) => {
+      return tsvData.split('\n').map(row => {
+        return row.split('\t');
+      });
+    };
+
+    const tableData = processTableData(data);
+
+    // Retornar o produto no formato solicitado
+    return {
+      product_name: product.comercial_name || '',
+      product_image: base64Image || '',
+      segments: segments,
+      topics: combinedTopics,
+      table: tableData,
+    };
+  }
+
+  async generatePdfProductAndSendByEmail(
+    downloadType: DownloadProductQueryDto,
+    informationDownloadProduct: InformationDownloadProductRequest,
+    productDataForPdf: GenerateProductPdf
+  ) {
+    const { username, company, phone_number, email } = informationDownloadProduct;
+
+    // Validação do email
+    const validateEmail = (email: string) => {
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+      return emailRegex.test(email);
+    };
+
+    if (!validateEmail(email)) {
+      throw new HttpException(
+        { message: 'Email inválido', field: 'email' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Validação do telefone
+    const validatePhone = (phone: string) => {
+      const phoneRegex = /^\d{1,4}\s?(\(?\d{2,5}\)?[\s\-]?)?(\d{4,5})[\s\-]?\d{4}$/;
+      return phoneRegex.test(phone) && phone.replace(/\D/g, '').length <= 15;
+    };
+
+    if (!validatePhone(phone_number)) {
+      throw new HttpException(
+        { message: 'Telefone inválido. O formato deve ser XX (DDD) 9XXXX-XXXX ou XX 9XXXX-XXXX', field: 'phone_number' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Validação do nome
+    const validateName = (text: string) => {
+      const hasRepeatedLetters = (word: string) => /([a-zA-Z])\1{2,}/.test(word);
+      const words = text.trim().split(/\s+/);
+
+      return (
+        words.length > 1 &&
+        words.every(
+          (word) =>
+            word.length >= 3 &&
+            !hasRepeatedLetters(word) &&
+            new Set(word).size > 1,
+        )
+      );
+    };
+
+    if (!validateName(username)) {
+      throw new HttpException(
+        { message: 'Um nome e sobrenome válido por favor', field: 'name' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Validação da empresa
+    const validateCompany = (text: string) => {
+      const invalidWords = [
+        'test',
+        'teste',
+        'empresa',
+        'example',
+        'demo',
+        'company',
+        'Enterprise',
+      ];
+      const hasRepeatedLetters = (input: string) => /([a-zA-Z])\1{2,}/.test(input);
+
+      return (
+        text.length > 2 &&
+        !invalidWords.includes(text.toLowerCase()) &&
+        !hasRepeatedLetters(text)
+      );
+    };
+
+    if (!validateCompany(company)) {
+      throw new HttpException(
+        { message: 'Uma empresa válida por favor', field: 'company' },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const fileName = `product_${new Date().toISOString().replace(/[:.-]/g, '')}.pdf`
+
+    try {
+      // Aguarda a execução da função que gera os arquivos e retorna os caminhos dos arquivos
+      const { createdFiles } = await this.fileManagerService.generateConvertedPdfPagesToImage(productDataForPdf, fileName);
+    
+      // Envia o e-mail com o arquivo anexo
+      await this.emailService.sendEmailProductAtached(
+        informationDownloadProduct.email,
+        'Download Concluído',
+        informationDownloadProduct.username,
+        'Humato de potássio.pdf',
+        getPath(`src/assets/temp/pdf-by-images/${fileName}`)
+      );
+
+      this.fileManagerService.deleteFiles(createdFiles);
+
+    } catch (error) {
+      console.error('Erro durante o processo generatePdfProductAndSendByEmail:', error);
+    }
+    return 'OK';
   }
 
   // async getProductInTableKeys(): Promise<string[]> {
