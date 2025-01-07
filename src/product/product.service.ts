@@ -685,7 +685,7 @@ export class ProductService {
       const safeText = text || ""; // Valor fallback para quando 'text' for undefined ou null
       const hasRepeatedLetters = (word: string) => /([a-zA-Z])\1{2,}/.test(word);
       const words = safeText.trim().split(/\s+/);
-    
+
       return (
         words.length > 1 &&
         words.every(
@@ -755,7 +755,7 @@ export class ProductService {
         productDataRequest: productDataForPdf.data_request,
       })
 
-      // this.fileManagerService.deleteFiles(createdFiles);
+      await this.fileManagerService.deleteFiles(createdFiles);
 
     } catch (error) {
       console.error('Erro durante o processo generatePdfProductAndSendByEmail:', error);

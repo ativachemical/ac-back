@@ -35,3 +35,7 @@ export function getPath(relativePath: string): string {
   const normalizedPath = path.normalize(relativePath.replace(/^\.\//, '')); // Remove './' inicial, se existir
   return path.join(process.cwd(), normalizedPath);
 }
+
+export function currentDate(){
+  return new Date(new Date().toISOString()).toLocaleString('pt-BR')
+}

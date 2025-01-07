@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as fsPromisses from 'fs/promises';
-import { getPath } from '../utils';
+import { currentDate, getPath } from '../utils';
 import { GenerateProductPdf } from './dto/generate-product-pdf';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import * as pdfMake from 'pdfmake/build/pdfmake';
@@ -197,218 +197,239 @@ export class FileManagerService {
             .filter(icon => icon); // Remove os undefined (caso algum segmento não tenha ícone)
 
 
-        const isLargeTable = table[0]?.length > 11;
+        const quantityColunsInTable = 0;
         let test: any;
-        if (isLargeTable) {
-            test = [{
-                columns: [
-                    {
-                        style: 'tableExample',
-                        layout: 'noBorders',
-                        table: {
-                            headerRows: 0, // Sem cabeçalho para essa tabela
-                            body: footerItems.map(item => {
-                                // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
-                                const textCell = {
-                                    text: item.text,
-                                    fontSize: 10,
-                                    ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
-                                };
-                                return [
-                                    {
-                                        image: item.icon,
-                                        width: 12,
-                                        height: 12,
-                                        alignment: 'left',
-                                    },
-                                    {
-                                        ...textCell,
-                                        alignment: 'left',
-                                        margin: [5, 0],
-                                    },
-                                ];
-                            }),
-                        },
-                        margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
-                    },
-                ],
-            },
-            {
-                text: `documento gerado em: ${new Date().toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true  // 12 horas / 24 Horas
-                })}`,
-                fontSize: 9,
-                alignment: 'center',
-                margin: [0, 10, 0, 0],
-                color: '#bdbdbd'
-            },                  // Forçar uma quebra de página antes de definir a orientação para a próxima página
-            {
-                text: '',
-                style: 'header',
-                alignSegment: 'center',
-                pageBreak: 'before',
-                pageOrientation: 'landscape'
-            },
-            {
-                image: logoAC,
-                width: 200,
-                pageOrientation: 'landscape'
-            },
-            {
-                table: {
-                    body: table // Usando a variável tableTest com os dados da tabela
-                },
-                layout: 'lightHorizontal', // Layout simples com linhas horizontais
-                margin: [0, 10, 0, 50], // Margens ajustadas conforme necessário
-            },
-
-            {
-                columns: [
-                    {
-                        style: 'tableExample',
-                        layout: 'noBorders',
-                        table: {
-                            headerRows: 0, // Sem cabeçalho para essa tabela
-                            body: footerItems.map(item => {
-                                // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
-                                const textCell = {
-                                    text: item.text,
-                                    fontSize: 10,
-                                    ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
-                                };
-                                return [
-                                    {
-                                        image: item.icon,
-                                        width: 12,
-                                        height: 12,
-                                        alignment: 'left',
-                                    },
-                                    {
-                                        ...textCell,
-                                        alignment: 'left',
-                                        margin: [5, 0],
-                                    },
-                                ];
-                            }),
-                        },
-                        margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
-                    },
-                ],
-            },
-            {
-                text: `documento gerado em: ${new Date().toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true  // 12 horas / 24 Horas
-                })}`,
-                fontSize: 9,
-                alignment: 'center',
-                margin: [0, 10, 0, 0],
-                color: '#bdbdbd'
-            }
-            ]
-        } else {
-            test = [{
-                text: 'Especificações',
-                fontSize: 14,
-                bold: true,
-                alignment: 'center',
-                margin: [0, 0, 0, 15]
-            },
-            {
-                columns: [
-                    { width: '*', text: '' },
-                    {
-                        width: 'auto',
-                        table: {
-                            body: [
-                                // Corpo da tabela processado a partir do TSV, com negrito na primeira linha (header)
-                                ...table.map((row, rowIndex) =>
-                                    row.map((cell, colIndex) => ({
-                                        text: cell,
-                                        style: rowIndex === 0 ? 'tableHeader' : 'tableCell', // Aplica 'tableHeader' para a primeira linha
-                                        alignment: 'center',  // Centraliza as células, se necessário
-                                        border: [true, true, true, true],  // Adiciona bordas visíveis
-                                        color: '#404d63'  // Altera a cor do texto para branco
-                                    }))
-                                ),
-                            ]
-                        },
-                        layout: {
-                            // Estilo zebra para alternar as cores das linhas
-                            fillColor: function (rowIndex) {
-                                return (rowIndex % 2 === 0) ? '#ececec' : '#f7f7f7'; // Cor para linhas pares
+        switch (true) {
+            case quantityColunsInTable > 11:
+                test = [{
+                    columns: [
+                        {
+                            style: 'tableExample',
+                            layout: 'noBorders',
+                            table: {
+                                headerRows: 0, // Sem cabeçalho para essa tabela
+                                body: footerItems.map(item => {
+                                    // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
+                                    const textCell = {
+                                        text: item.text,
+                                        fontSize: 10,
+                                        ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
+                                    };
+                                    return [
+                                        {
+                                            image: item.icon,
+                                            width: 12,
+                                            height: 12,
+                                            alignment: 'left',
+                                        },
+                                        {
+                                            ...textCell,
+                                            alignment: 'left',
+                                            margin: [5, 0],
+                                        },
+                                    ];
+                                }),
                             },
-                            hLineWidth: function (i, node) { return 1; }, // Linha horizontal
-                            vLineWidth: function (i, node) { return 1; }, // Linha vertical
-                            hLineColor: '#b3b4b6', // Cor branca para as linhas horizontais
-                            vLineColor: '#b3b4b6', // Cor branca para as linhas verticais
+                            margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
                         },
-                        margin: [0, 0, 0, 20],  // Margem abaixo da tabela
+                    ],
+                },
+                {
+                    text: `documento gerado em: ${currentDate()}`,
+                    fontSize: 9,
+                    alignment: 'center',
+                    margin: [0, 10, 0, 0],
+                    color: '#bdbdbd'
+                },                  // Forçar uma quebra de página antes de definir a orientação para a próxima página
+                {
+                    text: '',
+                    style: 'header',
+                    alignSegment: 'center',
+                    pageBreak: 'before',
+                    pageOrientation: 'landscape'
+                },
+                {
+                    image: logoAC,
+                    width: 200,
+                    pageOrientation: 'landscape'
+                },
+                {
+                    table: {
+                        body: table // Usando a variável tableTest com os dados da tabela
                     },
-                    { width: '*', text: '' },
-                ]
-            },
-            {
-                columns: [
-                    {
-                        style: 'tableExample',
-                        layout: 'noBorders',
-                        table: {
-                            headerRows: 0, // Sem cabeçalho para essa tabela
-                            body: footerItems.map(item => {
-                                // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
-                                const textCell = {
-                                    text: item.text,
-                                    fontSize: 10,
-                                    ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
-                                };
-                                return [
-                                    {
-                                        image: item.icon,
-                                        width: 12,
-                                        height: 12,
-                                        alignment: 'left',
-                                    },
-                                    {
-                                        ...textCell,
-                                        alignment: 'left',
-                                        margin: [5, 0],
-                                    },
-                                ];
-                            }),
-                        },
-                        margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
-                    },
-                ],
-            },
-            {
-                text: `documento gerado em: ${new Date().toLocaleString('pt-BR', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: true  // 12 horas / 24 Horas
-                })}`,
-                fontSize: 9,
-                alignment: 'center',
-                margin: [0, 10, 0, 0],
-                color: '#bdbdbd'
-            }]
-        }
+                    layout: 'lightHorizontal', // Layout simples com linhas horizontais
+                    margin: [0, 10, 0, 50], // Margens ajustadas conforme necessário
+                },
 
+                {
+                    columns: [
+                        {
+                            style: 'tableExample',
+                            layout: 'noBorders',
+                            table: {
+                                headerRows: 0, // Sem cabeçalho para essa tabela
+                                body: footerItems.map(item => {
+                                    // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
+                                    const textCell = {
+                                        text: item.text,
+                                        fontSize: 10,
+                                        ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
+                                    };
+                                    return [
+                                        {
+                                            image: item.icon,
+                                            width: 12,
+                                            height: 12,
+                                            alignment: 'left',
+                                        },
+                                        {
+                                            ...textCell,
+                                            alignment: 'left',
+                                            margin: [5, 0],
+                                        },
+                                    ];
+                                }),
+                            },
+                            margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
+                        },
+                    ],
+                },
+                {
+                    text: `documento gerado em: ${currentDate()}`,
+                    fontSize: 9,
+                    alignment: 'center',
+                    margin: [0, 10, 0, 0],
+                    color: '#bdbdbd'
+                }
+                ]
+                break;
+            case quantityColunsInTable < 11 && quantityColunsInTable >= 1:
+                test = [{
+                    text: 'Especificações',
+                    fontSize: 14,
+                    bold: true,
+                    alignment: 'center',
+                    margin: [0, 0, 0, 15]
+                },
+                {
+                    columns: [
+                        { width: '*', text: '' },
+                        {
+                            width: 'auto',
+                            table: {
+                                body: [
+                                    // Corpo da tabela processado a partir do TSV, com negrito na primeira linha (header)
+                                    ...table.map((row, rowIndex) =>
+                                        row.map((cell, colIndex) => ({
+                                            text: cell,
+                                            style: rowIndex === 0 ? 'tableHeader' : 'tableCell', // Aplica 'tableHeader' para a primeira linha
+                                            alignment: 'center',  // Centraliza as células, se necessário
+                                            border: [true, true, true, true],  // Adiciona bordas visíveis
+                                            color: '#404d63'  // Altera a cor do texto para branco
+                                        }))
+                                    ),
+                                ]
+                            },
+                            layout: {
+                                // Estilo zebra para alternar as cores das linhas
+                                fillColor: function (rowIndex) {
+                                    return (rowIndex % 2 === 0) ? '#ececec' : '#f7f7f7'; // Cor para linhas pares
+                                },
+                                hLineWidth: function (i, node) { return 1; }, // Linha horizontal
+                                vLineWidth: function (i, node) { return 1; }, // Linha vertical
+                                hLineColor: '#b3b4b6', // Cor branca para as linhas horizontais
+                                vLineColor: '#b3b4b6', // Cor branca para as linhas verticais
+                            },
+                            margin: [0, 0, 0, 20],  // Margem abaixo da tabela
+                        },
+                        { width: '*', text: '' },
+                    ]
+                },
+                {
+                    columns: [
+                        {
+                            style: 'tableExample',
+                            layout: 'noBorders',
+                            table: {
+                                headerRows: 0, // Sem cabeçalho para essa tabela
+                                body: footerItems.map(item => {
+                                    // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
+                                    const textCell = {
+                                        text: item.text,
+                                        fontSize: 10,
+                                        ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
+                                    };
+                                    return [
+                                        {
+                                            image: item.icon,
+                                            width: 12,
+                                            height: 12,
+                                            alignment: 'left',
+                                        },
+                                        {
+                                            ...textCell,
+                                            alignment: 'left',
+                                            margin: [5, 0],
+                                        },
+                                    ];
+                                }),
+                            },
+                            margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
+                        },
+                    ],
+                },
+                {
+                    text: `documento gerado em: ${currentDate()}`,
+                    fontSize: 9,
+                    alignment: 'center',
+                    margin: [0, 10, 0, 0],
+                    color: '#bdbdbd'
+                }]
+                break;
+            case quantityColunsInTable <= 0:
+                test = [
+                    {
+                        columns: [
+                            {
+                                style: 'tableExample',
+                                layout: 'noBorders',
+                                table: {
+                                    headerRows: 0, // Sem cabeçalho para essa tabela
+                                    body: footerItems.map(item => {
+                                        // Verifica se o item possui a propriedade 'link' e, em caso afirmativo, adiciona a tag 'link' com a URL
+                                        const textCell = {
+                                            text: item.text,
+                                            fontSize: 10,
+                                            ...(item.link ? { link: item.link, color: '#4383f0' } : {}),
+                                        };
+                                        return [
+                                            {
+                                                image: item.icon,
+                                                width: 12,
+                                                height: 12,
+                                                alignment: 'left',
+                                            },
+                                            {
+                                                ...textCell,
+                                                alignment: 'left',
+                                                margin: [5, 0],
+                                            },
+                                        ];
+                                    }),
+                                },
+                                margin: [0, 70, 0, 0],  // Ajuste a margem conforme necessário
+                            },
+                        ],
+                    },
+                    {
+                        text: `documento gerado em: ${currentDate()}`,
+                        fontSize: 9,
+                        alignment: 'center',
+                        margin: [0, 10, 0, 0],
+                        color: '#bdbdbd'
+                    }]
+                break;
+        }
         // Defina o conteúdo do documento PDF
         const docDefinition = {
             pageMargins: [20, 20, 20, 20],
