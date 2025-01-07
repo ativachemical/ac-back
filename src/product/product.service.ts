@@ -667,12 +667,18 @@ export class ProductService {
       );
     }
 
-    if (!phone_number) {
-      throw new HttpException(
-        { message: 'Telefone inválido. O formato deve ser XX (DDD) 9XXXX-XXXX ou XX 9XXXX-XXXX', field: 'phone_number' },
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // Validação do telefone
+    // const validatePhone = (phone: string) => {
+    //   const phoneRegex = /^\d{1,4}\s?(\(?\d{2,5}\)?[\s\-]?)?(\d{4,5})[\s\-]?\d{4}$/;
+    //   return phoneRegex.test(phone) && phone.replace(/\D/g, '').length <= 15;
+    // };
+
+    // if (!phone_number) {
+    //   throw new HttpException(
+    //     { message: 'Telefone inválido. O formato deve ser XX (DDD) 9XXXX-XXXX ou XX 9XXXX-XXXX', field: 'phone_number' },
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     // Validação do nome
     const validateName = (text: string) => {
