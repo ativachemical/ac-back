@@ -451,7 +451,7 @@ export class ProductService {
             [
               {
                 type: 'pdf',
-                link: `product/download/${product.id}?type=pdf`
+                link: `product/download/${product.id}?download_type=pdf`
               }
             ],
         };
