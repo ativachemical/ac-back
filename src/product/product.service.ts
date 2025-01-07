@@ -332,7 +332,6 @@ export class ProductService {
 
   async filterProductList(
     filterDto: GetProductListFilterDto,
-    baseUrl,
   ): Promise<GetProductListDto> {
     // Definir valor default para o campo search
     const searchTerm = filterDto.search || '';
@@ -452,7 +451,7 @@ export class ProductService {
             [
               {
                 type: 'pdf',
-                link: `${baseUrl}/product/download/${product.id}?type=pdf`
+                link: `product/download/${product.id}?type=pdf`
               }
             ],
         };

@@ -168,9 +168,8 @@ export class ProductController {
   @ApiBody({ type: GetProductListFilterDto })
   async filterProductList(
     @Body() filterDto: GetProductListFilterDto,
-    @Req() req,
   ): Promise<GetProductListDto> {
-    const baseUrl = `${req.protocol}://${req.headers.host}`
+    // const baseUrl = `${req.protocol}://${req.headers.host}`
     return this.productService.filterProductList(filterDto, baseUrl);
   }
 
