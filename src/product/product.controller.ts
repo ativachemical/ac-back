@@ -170,7 +170,7 @@ export class ProductController {
     @Body() filterDto: GetProductListFilterDto,
   ): Promise<GetProductListDto> {
     // const baseUrl = `${req.protocol}://${req.headers.host}`
-    return this.productService.filterProductList(filterDto, baseUrl);
+    return this.productService.filterProductList(filterDto);
   }
 
   @Post('download/:id')
