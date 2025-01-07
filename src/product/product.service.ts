@@ -682,9 +682,10 @@ export class ProductService {
 
     // Validação do nome
     const validateName = (text: string) => {
+      const safeText = text || ""; // Valor fallback para quando 'text' for undefined ou null
       const hasRepeatedLetters = (word: string) => /([a-zA-Z])\1{2,}/.test(word);
-      const words = text.trim().split(/\s+/);
-
+      const words = safeText.trim().split(/\s+/);
+    
       return (
         words.length > 1 &&
         words.every(
