@@ -747,15 +747,15 @@ export class ProductService {
         getPath(`src/assets/temp/pdf-by-images/${fileName}`)
       );
 
-      // await this.emailService.sendDownloadAlert({
-      //   userName: informationDownloadProduct.username,
-      //   company: informationDownloadProduct.company,
-      //   phoneNumber: informationDownloadProduct.phone_number,
-      //   email: informationDownloadProduct.email,
-      //   productName: productDataForPdf.product_name,
-      //   productId: productDataForPdf.product_id,
-      //   productDataRequest: productDataForPdf.data_request,
-      // })
+      await this.emailService.sendDownloadAlert({
+        userName: informationDownloadProduct.username,
+        company: informationDownloadProduct.company,
+        phoneNumber: informationDownloadProduct.phone_number,
+        email: informationDownloadProduct.email,
+        productName: productDataForPdf.product_name,
+        productId: productDataForPdf.product_id,
+        productDataRequest: productDataForPdf.data_request,
+      })
 
       await this.fileManagerService.deleteFiles(createdFiles);
 
