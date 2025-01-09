@@ -15,6 +15,7 @@ import {
 } from './dto/get-product-by-id copy';
 import { GetProductListFilterDto } from './dto/get-product-list-filter';
 import {
+  currentDate,
   getPath,
   limitString,
   normalizeString,
@@ -625,7 +626,7 @@ export class ProductService {
       },
     ]
 
-    const combinedTopics: Topics[] = productData.concat(topics);
+    // const combinedTopics: Topics[] = productData.concat(topics);
 
     const processTableData = (tsvData: string) => {
       return tsvData.split('\n').map(row => {
@@ -641,9 +642,10 @@ export class ProductService {
       product_name: product.comercial_name || '',
       product_image: base64Image || '',
       segments: segments,
-      topics: combinedTopics,
+      topicsFixed: productData,
+      topics: topics,
       table: tableData,
-      data_request: new Date().toLocaleString('pt-BR'),
+      data_request: currentDate(),
     };
   }
 
@@ -745,15 +747,15 @@ export class ProductService {
         getPath(`src/assets/temp/pdf-by-images/${fileName}`)
       );
 
-      await this.emailService.sendDownloadAlert({
-        userName: informationDownloadProduct.username,
-        company: informationDownloadProduct.company,
-        phoneNumber: informationDownloadProduct.phone_number,
-        email: informationDownloadProduct.email,
-        productName: productDataForPdf.product_name,
-        productId: productDataForPdf.product_id,
-        productDataRequest: productDataForPdf.data_request,
-      })
+      // await this.emailService.sendDownloadAlert({
+      //   userName: informationDownloadProduct.username,
+      //   company: informationDownloadProduct.company,
+      //   phoneNumber: informationDownloadProduct.phone_number,
+      //   email: informationDownloadProduct.email,
+      //   productName: productDataForPdf.product_name,
+      //   productId: productDataForPdf.product_id,
+      //   productDataRequest: productDataForPdf.data_request,
+      // })
 
       await this.fileManagerService.deleteFiles(createdFiles);
 

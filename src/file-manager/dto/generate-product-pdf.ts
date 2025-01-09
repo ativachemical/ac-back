@@ -18,6 +18,7 @@ export class GenerateProductPdf {
     product_name: string;
     product_image: string;
     segments: Segment[];
+    topicsFixed: Topics[]
     topics: Topics[]
     table: string[][];
     data_request: string;

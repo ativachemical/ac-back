@@ -36,6 +36,11 @@ export function getPath(relativePath: string): string {
   return path.join(process.cwd(), normalizedPath);
 }
 
-export function currentDate(){
-  return new Date(new Date().toISOString()).toLocaleString('pt-BR')
+export function currentDate() {
+  const now = new Date();
+  return new Intl.DateTimeFormat('pt-BR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    timeZone: 'America/Sao_Paulo',
+  }).format(now);
 }
