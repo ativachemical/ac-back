@@ -30,12 +30,14 @@ import { EmailService } from '../email/email.service';
 import { Segment } from './enums/segment';
 import { GenerateProductPdf, Topics } from '../file-manager/dto/generate-product-pdf';
 import { FileManagerService } from '../file-manager/file-manager.service';
+import { QueueBullService } from 'src/queue-bull/queue-bull.service';
 @Injectable()
 export class ProductService {
   constructor(
     private prisma: PrismaService,
     private emailService: EmailService,
     private fileManagerService: FileManagerService,
+    private readonly queueBullService: QueueBullService,
   ) { }
 
   async createProduct(createProductDto: CreateProductDto, imageBuffer: Buffer) {
@@ -668,19 +670,6 @@ export class ProductService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    // Validação do telefone
-    // const validatePhone = (phone: string) => {
-    //   const phoneRegex = /^\d{1,4}\s?(\(?\d{2,5}\)?[\s\-]?)?(\d{4,5})[\s\-]?\d{4}$/;
-    //   return phoneRegex.test(phone) && phone.replace(/\D/g, '').length <= 15;
-    // };
-
-    // if (!phone_number) {
-    //   throw new HttpException(
-    //     { message: 'Telefone inválido. O formato deve ser XX (DDD) 9XXXX-XXXX ou XX 9XXXX-XXXX', field: 'phone_number' },
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
 
     // Validação do nome
     const validateName = (text: string) => {

@@ -223,6 +223,9 @@ export class FileManagerService {
         const quantityColunsInTable = table[0].length;
         let responsiveTable: any = [];
         switch (true) {
+            case quantityColunsInTable <= 0:
+                responsiveTable = []
+                break;
             case quantityColunsInTable > 11:
                 responsiveTable = [
                     // Forçar uma quebra de página antes de definir a orientação para a próxima página
@@ -411,7 +414,7 @@ export class FileManagerService {
                         },
                     ]
                     : []), // Caso não haja tópicos, não renderiza esta seção
-                    responsiveTable
+                responsiveTable
             ],
             footer: (currentPage, pageCount) => {
                 const leftItems = footerItems.slice(0, 2);  // Definindo 2 itens para a primeira coluna

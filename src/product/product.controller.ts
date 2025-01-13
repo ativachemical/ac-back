@@ -39,6 +39,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DownloadProductType } from './enums/download';
 import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
 import { FileManagerService } from '../file-manager/file-manager.service';
+import { QueueBullService } from 'src/queue-bull/queue-bull.service';
 
 
 @ApiTags('product')
@@ -47,6 +48,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly fileManagerService: FileManagerService,
+    private readonly queueBullService: QueueBullService,
   ) { }
 
   // @Post()
@@ -181,7 +183,13 @@ export class ProductController {
     @Body() informationDownloadProduct: InformationDownloadProductRequest,
   ): Promise<any> {
     const productData = await this.productService.getProductDataByIdForPdf(productId);
-    return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
+    // return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
+
+    // Verifica se os dados do produto foram encontrados
+    if (!productData) {
+      throw new HttpException('Produto não encontrado', HttpStatus.NOT_FOUND);
+    }
+    return this.queueBullService.addGeneratePdfJob(downloadType, informationDownloadProduct, productData);
   }
 
   @ApiBearerAuth()

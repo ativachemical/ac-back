@@ -9,6 +9,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmailModule } from './email/email.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
+import { BullModule } from '@nestjs/bull';
+import { QueueBullModule } from './queue-bull/queue-bull.module';
+import Redis from 'ioredis';
 
 @Module({
   imports: [
@@ -22,8 +25,17 @@ import { FileManagerModule } from './file-manager/file-manager.module';
     }),
     EmailModule,
     FileManagerModule,
+    BullModule.forRootAsync({
+      useFactory: () => ({
+        redis: process.env.REDIS_QUEUE,
+      }),
+    }),
+    BullModule.registerQueue({
+      name: 'generate-pdf-email', // Nome da fila
+    }),
+    QueueBullModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
