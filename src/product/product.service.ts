@@ -765,7 +765,7 @@ export class ProductService {
     return 'OK';
   }
 
-  async getProductDownloadHistory() {
+  async getProductDownloadHistory(): Promise<any> {
     return await this.prisma.productDownloadHistory.findMany({
       orderBy: {
         created_at: 'desc'

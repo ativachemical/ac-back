@@ -6,12 +6,14 @@ import { resolve } from 'path';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { join } from 'path';
 import * as express from 'express';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Tornar a pasta "assets" pública
   app.use('/assets', express.static(join(__dirname, '..', 'assets')));
+
   // Configuração CORS dinâmica para múltiplas origens
   app.enableCors({
     origin: (origin, callback) => {

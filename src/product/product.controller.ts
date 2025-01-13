@@ -226,11 +226,10 @@ export class ProductController {
     }
   }
 
-  @Get('download-history')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  async getProductDownloadHistory(): Promise<any> {
-    return this.productService.getProductDownloadHistory();
+  @Post('download-history')
+  async getProductDownloadHistory(){
+    return await this.productService.getProductDownloadHistory();
   }
-
 }
