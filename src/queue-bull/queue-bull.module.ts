@@ -2,7 +2,7 @@ import { forwardRef, Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bull';
 import { QueueBullService } from './queue-bull.service';
 import { QueueBullProcessor } from './queue-bull.processor';
-import { ProductModule } from 'src/product/product.module';
+import { ProductModule } from '../product/product.module';
 
 @Module({
   imports: [

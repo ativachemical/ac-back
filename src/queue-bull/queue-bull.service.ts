@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
-import { GenerateProductPdf } from 'src/file-manager/dto/generate-product-pdf';
-import { DownloadProductQueryDto, InformationDownloadProductRequest } from 'src/product/dto/information -download-product-request';
+import { GenerateProductPdf } from '../file-manager/dto/generate-product-pdf';
+import { DownloadProductQueryDto, InformationDownloadProductRequest } from '../product/dto/information -download-product-request';
 
 @Injectable()
 export class QueueBullService {

@@ -30,7 +30,7 @@ import { EmailService } from '../email/email.service';
 import { Segment } from './enums/segment';
 import { GenerateProductPdf, Topics } from '../file-manager/dto/generate-product-pdf';
 import { FileManagerService } from '../file-manager/file-manager.service';
-import { QueueBullService } from 'src/queue-bull/queue-bull.service';
+import { QueueBullService } from '../queue-bull/queue-bull.service';
 @Injectable()
 export class ProductService {
   constructor(

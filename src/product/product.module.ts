@@ -6,9 +6,8 @@ import { MulterModule } from '@nestjs/platform-express';
 import * as multer from 'multer';
 import { EmailService } from '../email/email.service';
 import { FileManagerService } from '../file-manager/file-manager.service';
-import { QueueBullService } from 'src/queue-bull/queue-bull.service';
-import { QueueBullModule } from 'src/queue-bull/queue-bull.module';
-import { QueueBullProcessor } from 'src/queue-bull/queue-bull.processor';
+import { QueueBullService } from '../queue-bull/queue-bull.service';
+import { QueueBullModule } from '../queue-bull/queue-bull.module';
 import { BullModule } from '@nestjs/bull';
 
 @Module({
