@@ -728,6 +728,17 @@ export class ProductService {
       // Aguarda a execução da função que gera os arquivos e retorna os caminhos dos arquivos
       const { createdFiles } = await this.fileManagerService.generateConvertedPdfPagesToImage(productDataForPdf, fileName);
 
+      await this.prisma.productDownloadHistory.create({
+        data: {
+          name: username,
+          email: email,
+          company: company,
+          phone_number: phone_number,
+          product_name: productDataForPdf.product_name,
+          product_id: productDataForPdf.product_id,
+        }
+      })
+
       // Envia o e-mail com o arquivo anexo
       await this.emailService.sendEmailProductAtached(
         informationDownloadProduct.email,
@@ -752,6 +763,14 @@ export class ProductService {
       console.error('Erro durante o processo generatePdfProductAndSendByEmail:', error);
     }
     return 'OK';
+  }
+
+  async getProductDownloadHistory() {
+    return await this.prisma.productDownloadHistory.findMany({
+      orderBy: {
+        created_at: 'desc'
+      }
+    });
   }
 
   // async getProductInTableKeys(): Promise<string[]> {

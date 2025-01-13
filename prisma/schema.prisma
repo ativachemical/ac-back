@@ -111,5 +111,7 @@ model ProductDownloadHistory {
   email         String
   company       String
   phone_number  String
+  product_name  String
+  product_id    Int
   created_at    DateTime @default(now())
 }
