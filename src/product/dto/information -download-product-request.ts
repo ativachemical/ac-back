@@ -33,4 +33,9 @@ export class DownloadProductQueryDto  {
       })
       download_type: DownloadProductType;
 }
-  
+
+export class DownloadProductHistoryRequest {
+  @ApiProperty({example: 'Lu'})
+  @IsString()
+  search: string;
+}

@@ -37,7 +37,7 @@ import {
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { DownloadProductType } from './enums/download';
-import { DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
+import { DownloadProductHistoryRequest, DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
 import { FileManagerService } from '../file-manager/file-manager.service';
 import { QueueBullService } from '../queue-bull/queue-bull.service';
 
@@ -229,7 +229,8 @@ export class ProductController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post('download-history')
-  async getProductDownloadHistory(){
-    return await this.productService.getProductDownloadHistory();
+  async getProductDownloadHistory(
+    @Body() informationDownloadProduct: DownloadProductHistoryRequest) {
+    return await this.productService.getProductDownloadHistory(informationDownloadProduct);
   }
 }
