@@ -16,13 +16,15 @@ export class EmailService {
     private prisma: PrismaService
   ) {
     this.transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: process.env.EMAIL_SMTP_HOST,
+      port: parseInt(process.env.EMAIL_SMTP_PORT, 10),
+      secure: process.env.EMAIL_SMTP_SECURE === 'true',// true para SSL, false para TLS
       disableFileAccess: false, // Evita caching em arquivos
       disableUrlAccess: true, // Evita caching de URLs
       pool: true,
       auth: {
-        user: process.env.EMAIL,
-        pass: process.env.EMAIL_PASSWORD, // Use variáveis de ambiente para segurança
+        user: process.env.EMAIL_SMTP_USER,
+        pass: process.env.EMAIL_SMTP_PASS, // Use variáveis de ambiente para segurança
       },
     });
   }
@@ -35,7 +37,7 @@ export class EmailService {
   ) {
     const path = require('path');
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: process.env.EMAIL_FROM,
       to,
       subject: 'Download Concluído',
       html: `
@@ -112,7 +114,7 @@ export class EmailService {
     const path = require('path');
     const { userName, company, phoneNumber, email, productId, productName, productDataRequest } = downloadAlertRequest
     const mailOptions = {
-      from: process.env.EMAIL,
+      from: process.env.EMAIL_FROM,
       to: process.env.EMAIL_ALERT,
       subject: 'Alerta de Download Produto',
       html: `

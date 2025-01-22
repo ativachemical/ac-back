@@ -11,6 +11,7 @@ import { EmailModule } from './email/email.module';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { BullModule } from '@nestjs/bull';
 import { QueueBullModule } from './queue-bull/queue-bull.module';
+import { HealthCheckModule } from './health-check/health-check.module';
 import Redis from 'ioredis';
 
 @Module({
@@ -34,6 +35,7 @@ import Redis from 'ioredis';
       name: 'generate-pdf-email', // Nome da fila
     }),
     QueueBullModule,
+    HealthCheckModule,
   ],
   controllers: [AppController],
   providers: [AppService],

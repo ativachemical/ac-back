@@ -183,12 +183,13 @@ export class ProductController {
     @Body() informationDownloadProduct: InformationDownloadProductRequest,
   ): Promise<any> {
     const productData = await this.productService.getProductDataByIdForPdf(productId);
-    // return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
 
     // Verifica se os dados do produto foram encontrados
     if (!productData) {
       throw new HttpException('Produto não encontrado', HttpStatus.NOT_FOUND);
     }
+    //use a versao comentada abaixo para testar localmente pois a Fila está em uma rede privada e nao funciona em localhost
+    //return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
     return this.queueBullService.addGeneratePdfJob(downloadType, informationDownloadProduct, productData);
   }
 
