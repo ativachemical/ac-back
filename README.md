@@ -86,7 +86,7 @@ npx nest g module auth
 npx nest g service auth
 npx nest g controller auth
 
-npx nest generate resource
+npx nest generate 
 npm i -D ts-node typescript @types/node
 
 ```

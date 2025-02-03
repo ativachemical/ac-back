@@ -12,6 +12,7 @@ import { FileManagerModule } from './file-manager/file-manager.module';
 import { BullModule } from '@nestjs/bull';
 import { QueueBullModule } from './queue-bull/queue-bull.module';
 import { HealthCheckModule } from './health-check/health-check.module';
+import { RecaptchaModule } from './recaptcha/recaptcha.module';
 import Redis from 'ioredis';
 
 @Module({
@@ -36,6 +37,7 @@ import Redis from 'ioredis';
     }),
     QueueBullModule,
     HealthCheckModule,
+    RecaptchaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
