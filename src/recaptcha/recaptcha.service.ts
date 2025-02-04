@@ -15,8 +15,8 @@ export class RecaptchaService {
     async validateRecaptcha(dto: ValidateRecaptchaDto): Promise<boolean> {
         const requestBody = {
             event: {
-                token: dto.token,
-                expectedAction: dto.expectedAction,
+                token: dto.rechaptchaToken,
+                expectedAction: dto.rechaptchaAction,
                 siteKey: this.RECAPTCHA_SITE_KEY,
             },
         };
@@ -32,7 +32,7 @@ export class RecaptchaService {
             // - O token é válido
             // - A ação esperada corresponde à ação do token
             // - A pontuação de risco é alta (normalmente acima de 0.5)
-            if (tokenProperties.valid && tokenProperties.action === dto.expectedAction && riskAnalysis.score >= 0.5) {
+            if (tokenProperties.valid && tokenProperties.action === dto.rechaptchaAction && riskAnalysis.score >= 0.5) {
                 return true;
             }
 

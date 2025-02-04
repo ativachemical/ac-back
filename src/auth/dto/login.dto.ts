@@ -13,3 +13,30 @@ export class LoginDto {
   @ApiProperty()
   password: string;
 }
+
+export class LoginRequest {
+  @IsEmail()
+  @IsNotEmpty()
+  @ApiProperty()
+  email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  @ApiProperty()
+  password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '',
+  })
+  rechaptchaToken: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '',
+  })
+  rechaptchaAction: string;
+}

@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PrismaModule } from '../prisma/prisma.module';
 import { UsersModule } from '../users/users.module';
 import { JwtStrategy } from './jwt.strategy';
+import { RecaptchaModule } from 'src/recaptcha/recaptcha.module';
 
 @Module({
   imports: [
@@ -16,8 +17,9 @@ import { JwtStrategy } from './jwt.strategy';
       signOptions: { expiresIn: process.env.JWT_SECRET_EXPIRATION },
     }),
     UsersModule,
+    RecaptchaModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
 })
-export class AuthModule {}
+export class AuthModule { }

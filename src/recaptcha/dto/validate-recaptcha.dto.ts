@@ -7,12 +7,12 @@ export class ValidateRecaptchaDto {
     @ApiProperty({
         example: '',
     })
-    token: string;
+    rechaptchaToken: string;
 
     @IsString()
     @IsNotEmpty()
     @ApiProperty({
         example: '',
     })
-    expectedAction: string;
+    rechaptchaAction: string;
 }
