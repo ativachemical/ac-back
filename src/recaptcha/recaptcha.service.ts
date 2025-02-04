@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { RecaptchaResponse } from './interfaces/recaptcha-response.interface';
 import { ValidateRecaptchaDto } from './dto/validate-recaptcha.dto';
 import { HttpService } from '@nestjs/axios';
@@ -36,7 +36,7 @@ export class RecaptchaService {
                 return true;
             }
 
-            return false;
+            throw new UnauthorizedException('Invalid reCAPTCHA token');
         } catch (error) {
             console.error('Erro na validação do reCAPTCHA:', error);
             return false;
