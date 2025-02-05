@@ -39,7 +39,7 @@ export class RecaptchaService {
             throw new UnauthorizedException('Invalid reCAPTCHA token');
         } catch (error) {
             console.error('Erro na validação do reCAPTCHA:', error);
-            return false;
+            throw new UnauthorizedException('Invalid reCAPTCHA token');
         }
     }
 }
