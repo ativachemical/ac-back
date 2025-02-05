@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { AuthEntity } from './entity/auth.entity';
 import { LoginDto, LoginRequest } from './dto/login.dto';
-import { RecaptchaService } from 'src/recaptcha/recaptcha.service';
-import { ValidateRecaptchaDto } from 'src/recaptcha/dto/validate-recaptcha.dto';
+import { RecaptchaService } from '../recaptcha/recaptcha.service';
+import { ValidateRecaptchaDto } from '../recaptcha/dto/validate-recaptcha.dto';
 
 @Controller('auth')
 @ApiTags('auth')
