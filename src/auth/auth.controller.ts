@@ -17,12 +17,12 @@ export class AuthController {
   @Post('login')
   @ApiOkResponse({ type: AuthEntity })
   async login(@Body() loginRequest: LoginRequest) {
-    const { email, password, rechaptchaToken, rechaptchaAction } = loginRequest;
+    const { email, password, recaptchaToken, recaptchaAction } = loginRequest;
 
     // Criando um objeto do tipo ValidateRecaptchaDto
     const recaptchaDto = new ValidateRecaptchaDto();
-    recaptchaDto.rechaptchaToken = rechaptchaToken;
-    recaptchaDto.rechaptchaAction = rechaptchaAction;
+    recaptchaDto.recaptchaToken = recaptchaToken;
+    recaptchaDto.recaptchaAction = recaptchaAction;
 
     // Chamando a validação
     await this.recaptchaService.validateRecaptcha(recaptchaDto);
