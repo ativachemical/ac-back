@@ -414,7 +414,7 @@ export class FileManagerService {
                         },
                     ]
                     : []), // Caso não haja tópicos, não renderiza esta seção
-                responsiveTable
+                ...(responsiveTable.length > 0 ? responsiveTable : [])
             ],
             footer: (currentPage, pageCount) => {
                 const leftItems = footerItems.slice(0, 2);  // Definindo 2 itens para a primeira coluna
