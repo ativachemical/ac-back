@@ -40,8 +40,8 @@ import { DownloadProductType } from './enums/download';
 import { DownloadProductHistoryRequest, DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
 import { FileManagerService } from '../file-manager/file-manager.service';
 import { QueueBullService } from '../queue-bull/queue-bull.service';
-import { RecaptchaService } from 'src/recaptcha/recaptcha.service';
-import { ValidateRecaptchaDto } from 'src/recaptcha/dto/validate-recaptcha.dto';
+import { RecaptchaService } from '../recaptcha/recaptcha.service';
+import { ValidateRecaptchaDto } from '../recaptcha/dto/validate-recaptcha.dto';
 import { plainToInstance } from 'class-transformer';
 
 

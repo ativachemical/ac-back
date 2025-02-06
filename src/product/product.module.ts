@@ -9,7 +9,7 @@ import { FileManagerService } from '../file-manager/file-manager.service';
 import { QueueBullService } from '../queue-bull/queue-bull.service';
 import { QueueBullModule } from '../queue-bull/queue-bull.module';
 import { BullModule } from '@nestjs/bull';
-import { RecaptchaModule } from 'src/recaptcha/recaptcha.module';
+import { RecaptchaModule } from '../recaptcha/recaptcha.module';
 
 @Module({
   imports: [
