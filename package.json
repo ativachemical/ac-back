@@ -26,6 +26,7 @@
     "schema": "prisma/schema.prisma"
   },
   "dependencies": {
+    "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/bull": "^10.2.3",
     "@nestjs/bullmq": "^10.2.3",

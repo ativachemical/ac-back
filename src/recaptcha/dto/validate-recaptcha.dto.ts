@@ -1,18 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class ValidateRecaptchaDto {
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({
-        example: '',
-    })
+    @ApiProperty({ example: 'TOKEN_GERADO_NO_FRONTEND' })
     recaptchaToken: string;
 
+    @IsOptional()
     @IsString()
-    @IsNotEmpty()
-    @ApiProperty({
-        example: '',
-    })
-    recaptchaAction: string;
+    @ApiProperty({ example: '192.168.1.1', required: false })
+    recaptchaClientIp?: string;
 }

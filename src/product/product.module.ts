@@ -9,6 +9,7 @@ import { FileManagerService } from '../file-manager/file-manager.service';
 import { QueueBullService } from '../queue-bull/queue-bull.service';
 import { QueueBullModule } from '../queue-bull/queue-bull.module';
 import { BullModule } from '@nestjs/bull';
+import { RecaptchaModule } from 'src/recaptcha/recaptcha.module';
 
 @Module({
   imports: [
@@ -18,7 +19,9 @@ import { BullModule } from '@nestjs/bull';
     BullModule.registerQueue({
       name: 'generate-pdf-email',
     }),
-    forwardRef(() => QueueBullModule)],
+    forwardRef(() => QueueBullModule),
+    RecaptchaModule
+  ],
   controllers: [ProductController],
   providers: [
     ProductService,

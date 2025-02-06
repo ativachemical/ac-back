@@ -38,5 +38,5 @@ export class LoginRequest {
   @ApiProperty({
     example: '',
   })
-  recaptchaAction: string;
+  recaptchaClientIp: string;
 }

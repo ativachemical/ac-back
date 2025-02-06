@@ -40,6 +40,9 @@ import { DownloadProductType } from './enums/download';
 import { DownloadProductHistoryRequest, DownloadProductQueryDto, InformationDownloadProductRequest } from './dto/information -download-product-request';
 import { FileManagerService } from '../file-manager/file-manager.service';
 import { QueueBullService } from '../queue-bull/queue-bull.service';
+import { RecaptchaService } from 'src/recaptcha/recaptcha.service';
+import { ValidateRecaptchaDto } from 'src/recaptcha/dto/validate-recaptcha.dto';
+import { plainToInstance } from 'class-transformer';
 
 
 @ApiTags('product')
@@ -49,6 +52,7 @@ export class ProductController {
     private readonly productService: ProductService,
     private readonly fileManagerService: FileManagerService,
     private readonly queueBullService: QueueBullService,
+    private readonly recaptchaService: RecaptchaService,
   ) { }
 
   // @Post()
@@ -182,14 +186,28 @@ export class ProductController {
     @Query(new ValidationPipe({ transform: true })) downloadType: DownloadProductQueryDto,
     @Body() informationDownloadProduct: InformationDownloadProductRequest,
   ): Promise<any> {
+    // Busca os dados do produto
     const productData = await this.productService.getProductDataByIdForPdf(productId);
 
     // Verifica se os dados do produto foram encontrados
     if (!productData) {
       throw new HttpException('Produto não encontrado', HttpStatus.NOT_FOUND);
     }
-    //use a versao comentada abaixo para testar localmente pois a Fila está em uma rede privada e nao funciona em localhost
-    //return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
+
+    // Converte o body para o DTO de validação do reCAPTCHA
+    const recaptchaDto = plainToInstance(ValidateRecaptchaDto, {
+      recaptchaToken: informationDownloadProduct.recaptchaToken,
+      recaptchaClientIp: informationDownloadProduct.recaptchaClientIp || '', // Evita valores `undefined`
+    });
+
+    try {
+      await this.recaptchaService.validateRecaptcha(recaptchaDto);
+    } catch (error) {
+      console.error('Erro ao validar o reCAPTCHA:', error);
+      throw new HttpException('Falha na validação do reCAPTCHA', HttpStatus.FORBIDDEN);
+    }
+
+    // Chama a fila para gerar o PDF
     return this.queueBullService.addGeneratePdfJob(downloadType, informationDownloadProduct, productData);
   }
 

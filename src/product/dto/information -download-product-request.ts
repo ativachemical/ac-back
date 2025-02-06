@@ -22,6 +22,14 @@ export class InformationDownloadProductRequest {
     @ApiProperty({example: 'teste@gmail.com'})
     @IsString()
     email: string;
+
+    @ApiProperty({example: ''})
+    @IsString()
+    recaptchaToken: string;
+
+    @ApiProperty({example: ''})
+    @IsString()
+    recaptchaClientIp?: string;    
 }
 
 export class DownloadProductQueryDto  {
