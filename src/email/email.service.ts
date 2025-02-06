@@ -11,6 +11,7 @@ export class EmailService {
   private readonly backgroundPrimaryColor: string = '#f3f2f0';
   private readonly backgroundSecondaryColor: string = '#ffffff';
   private readonly textFooter: string = '#9e9e9e';
+  private readonly textColor: string = '#444444';
 
   constructor(
     private prisma: PrismaService
@@ -66,7 +67,7 @@ export class EmailService {
                     <br>
                     Agradecemos por acessar nosso site e demonstrar interesse em saber mais sobre nossos produtos. 
                     Fale com um consultor! 
-                    <a href="https://api.whatsapp.com/send/?phone=5511975840851&text=Ol%C3%A1%2C%20sou%20o%20${userName}%2C%20poderia%20me%20ajudar%3F" target="_blank" style="color: #1f89d5; font-weight: bold;">Acesse aqui</a>
+                    <a href="https://api.whatsapp.com/send/?phone=5511912721893&text=Ol%C3%A1%2C%20sou%20o%20${userName}%2C%20poderia%20me%20ajudar%3F" target="_blank" style="color: #1f89d5; font-weight: bold;">Acesse aqui</a>
                 </p>
             </td>
         </tr>
@@ -135,7 +136,7 @@ export class EmailService {
         </td>
       </tr>
       <tr>
-        <td>
+        <td style="color: ${this.textColor};">
           <h1 style="text-align:center; margin: 0.67em 0;">Alerta de Download Produto</h1>
           <p style="font-size:16px; margin: 0 0 0;"><strong>Nome Completo:</strong> ${userName}</p>
           <p style="font-size:16px; margin: 0 0 0;"><strong>Empresa:</strong> ${company}</p>
@@ -143,7 +144,7 @@ export class EmailService {
           <p style="font-size:16px; margin: 0 0 0;"><strong>Email:</strong> ${email}</p>
           <p style="font-size:16px; margin: 0 0 0;"><strong>Nome Produto:</strong> ${productName}</p>
           <p style="font-size:16px; margin: 0 0 0;"><strong>Id Produto:</strong> ${productId}</p>
-          <p style="font-size:16px; margin: 0;"><strong>Data:</strong> ${productDataRequest}</p>
+          <p style="font-size:16px; margin: 0 0 0;"><strong>Data:</strong> ${productDataRequest}</p>
         </td>
       </tr>
     </table>
