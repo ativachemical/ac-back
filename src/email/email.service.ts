@@ -136,15 +136,15 @@ export class EmailService {
         </td>
       </tr>
       <tr>
-        <td style="color: ${this.textColor};">
-          <h1 style="text-align:center; margin: 0.67em 0;">Alerta de Download Produto</h1>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Nome Completo:</strong> ${userName}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Empresa:</strong> ${company}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Telefone:</strong> ${phoneNumber}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Email:</strong> ${email}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Nome Produto:</strong> ${productName}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Id Produto:</strong> ${productId}</p>
-          <p style="font-size:16px; margin: 0 0 0;"><strong>Data:</strong> ${productDataRequest}</p>
+        <td style="p > color: ${this.textColor};">
+          <h1 style="text-align:center; margin: 0.67em 0; color:inherit;">Alerta de Download Produto</h1>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Nome Completo:</strong> ${userName}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Empresa:</strong> ${company}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Telefone:</strong> ${phoneNumber}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Email:</strong> ${email}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Nome Produto:</strong> ${productName}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Id Produto:</strong> ${productId}</p>
+          <p style="font-size:16px; margin:0 0 0; color:inherit;"><strong>Data:</strong> ${productDataRequest}</p>
         </td>
       </tr>
     </table>
