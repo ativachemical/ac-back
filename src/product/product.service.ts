@@ -588,9 +588,12 @@ export class ProductService {
       },
     });
 
-    const dimensions = sizeOf(image.source_image);
-    // Converter o buffer da imagem para uma string Base64
-    const base64Image = `data:image/${dimensions.type};base64,${image.source_image.toString('base64')}`;
+    let base64Image;
+
+    if (image) {
+      const dimensions = sizeOf(image.source_image);
+      base64Image = `data:image/${dimensions.type};base64,${image.source_image.toString('base64')}`;
+    }
 
     // Processar especificações do produto
     let data = '';
@@ -637,7 +640,6 @@ export class ProductService {
     };
 
     const tableData = processTableData(data);
-
     // Retornar o produto no formato solicitado
     return {
       product_id: productId,
@@ -734,8 +736,8 @@ export class ProductService {
           email: email,
           company: company,
           phone_number: phone_number,
-          product_name: productDataForPdf.product_name,
-          product_id: productDataForPdf.product_id,
+          product_name: productDataForPdf?.product_name,
+          product_id: productDataForPdf?.product_id,
         }
       })
 

@@ -200,15 +200,15 @@ export class ProductController {
       recaptchaClientIp: informationDownloadProduct.recaptchaClientIp || '', // Evita valores `undefined`
     });
 
-    try {
-      await this.recaptchaService.validateRecaptcha(recaptchaDto);
-    } catch (error) {
-      console.error('Erro ao validar o reCAPTCHA:', error);
-      throw new HttpException('Falha na validação do reCAPTCHA', HttpStatus.FORBIDDEN);
-    }
+    // try {
+    //   await this.recaptchaService.validateRecaptcha(recaptchaDto);
+    // } catch (error) {
+    //   console.error('Erro ao validar o reCAPTCHA:', error);
+    //   throw new HttpException('Falha na validação do reCAPTCHA', HttpStatus.FORBIDDEN);
+    // }
 
     // Chama a fila para gerar o PDF
-    // return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
+    return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
     return this.queueBullService.addGeneratePdfJob(downloadType, informationDownloadProduct, productData);
   }
 

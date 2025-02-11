@@ -150,6 +150,8 @@ export class FileManagerService {
         };
         // Leia e converta a imagem para base64, aguardando a Promise
         const logoAC = await this.getImageBase64(getPath('src/assets/img/logoAC.png'));
+        const default_product_image = await this.getImageBase64(getPath('src/assets/img/defaultImg.png'));
+
         // const tableTest = [
         //     ['Header 1', 'Header 2', 'Header 3', 'Header 4', 'Header 5', 'Header 6', 'Header 7', 'Header 8', 'Header 9', 'Header 10', 'Header 11', 'Header 12', 'Header 13', 'Header 14', 'Header 15', 'Header 16', 'Header 17', 'Header 18', 'Header 19', 'Header 20', 'Header 21', 'Header 22'],
         //     ['Text 1', 'Text 2', 'Text 3', 'Text 4', 'Text 5', 'Text 6', 'Text 7', 'Text 8', 'Text 9', 'Text 10', 'Text 11', 'Text 12', 'Text 13', 'Text 14', 'Text 15', 'Text 16', 'Text 17', 'Text 18', 'Text 19', 'Text 20', 'text 21', 'text 22'],
@@ -339,7 +341,7 @@ export class FileManagerService {
                             width: 160, // Largura fixa para a imagem
                             stack: [
                                 {
-                                    image: product_image,
+                                    image: (product_image? product_image : default_product_image),
                                     width: 160, // Largura da imagem
                                     margin: [0, 5, 0, 0], // Margens ajustadas
                                 },
