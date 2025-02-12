@@ -208,7 +208,7 @@ export class ProductController {
     // }
 
     // Chama a fila para gerar o PDF
-    return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
+    // return this.productService.generatePdfProductAndSendByEmail(downloadType, informationDownloadProduct, productData);
     return this.queueBullService.addGeneratePdfJob(downloadType, informationDownloadProduct, productData);
   }
 
