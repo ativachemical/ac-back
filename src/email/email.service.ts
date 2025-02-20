@@ -67,7 +67,9 @@ export class EmailService {
                     <br>
                     Agradecemos por acessar nosso site e demonstrar interesse em saber mais sobre nossos produtos. 
                     Fale com um consultor! 
-                    <a href="https://api.whatsapp.com/send/?phone=5511912721893&text=Ol%C3%A1%2C%20sou%20o%20${userName}%2C%20poderia%20me%20ajudar%3F" target="_blank" style="color: #1f89d5; font-weight: bold;">Acesse aqui</a>
+                    <a href="https://api.whatsapp.com/send/?phone=5511912721893&text=Ol%C3%A1%2C%20sou%20o%20${userName}%2C%20poderia%20me%20ajudar%3F" target="_blank" style="color:${this.primaryColor}; font-weight:bold;">Acesse aqui</a> 
+                    ou encaminhe um email para
+                    <a href="mailto:ativachemical@ativachemical.com" target="_blank" style="color:${this.primaryColor}; font-weight:bold;">ativachemical@ativachemical.com</a>
                 </p>
             </td>
         </tr>
